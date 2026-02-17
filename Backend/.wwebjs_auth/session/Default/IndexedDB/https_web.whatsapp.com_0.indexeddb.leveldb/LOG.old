@@ -1,0 +1,5 @@
+2026/02/10-15:38:06.333 599c Creating DB D:\LiveProjects\CopperJems\Backend\.wwebjs_auth\session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb since it was missing.
+2026/02/10-15:38:06.383 599c Reusing MANIFEST D:\LiveProjects\CopperJems\Backend\.wwebjs_auth\session\Default\IndexedDB\https_web.whatsapp.com_0.indexeddb.leveldb/MANIFEST-000001
+2026/02/10-17:24:03.261 4b4c Level-0 table #5: started
+2026/02/10-17:24:03.301 4b4c Level-0 table #5: 1156210 bytes OK
+2026/02/10-17:24:03.305 4b4c Delete type=0 #3
