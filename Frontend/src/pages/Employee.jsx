@@ -167,86 +167,86 @@ export default function Employee() {
         </header>
 
         {/* ================= CONTENT ================= */}
-      <main className="flex-1 min-w-0 overflow-y-auto p-4 sm:p-6">
+        <main className="flex-1 min-w-0 overflow-y-auto p-4 sm:p-6">
 
           {page === "dashboard" && (
             <>
-            
-            <EmployeeDashboard />
+
+              <EmployeeDashboard />
             </>
           )}
-           {page === "create-request" && <PurchaseRequest />}
+          {page === "create-request" && <PurchaseRequest />}
 
-            {page === "employee-production" && <EmployeeProduction />}
+          {page === "employee-production" && <EmployeeProduction />}
 
-            {page === "Product-sale" && <SalesEmployee />}
+          {page === "Product-sale" && <SalesEmployee />}
 
-            {page === "Client" && <AccountClients />}
+          {page === "Client" && <AccountClients />}
 
-            {page === "my-requests" && <EmployeePurchaseRequest />}
+          {page === "my-requests" && <EmployeePurchaseRequest />}
 
-            
+
         </main>
       </div>
 
       {/* ================= MOBILE SIDEBAR ================= */}
+
       <AnimatePresence>
-  {mobileOpen && (
-    <>
-      {/* BACKDROP */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        className="fixed inset-0 bg-black/50 z-40"
-        onClick={() => setMobileOpen(false)}
-      />
+        {mobileOpen && (
+          <>
+            {/* BACKDROP */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 bg-black/50 z-40"
+              onClick={() => setMobileOpen(false)}
+            />
 
-      {/* SIDEBAR */}
-      <motion.aside
-        initial={{ x: "-100%" }}
-        animate={{ x: 0 }}
-        exit={{ x: "-100%" }}
-        transition={{ type: "spring", stiffness: 260, damping: 30 }}
-        className="fixed top-0 left-0 w-72 h-full bg-[#0B1220] text-white z-50 flex flex-col"
-      >
+            {/* SIDEBAR */}
+            <motion.aside
+              initial={{ x: "-100%" }}
+              animate={{ x: 0 }}
+              exit={{ x: "-100%" }}
+              transition={{ type: "spring", stiffness: 260, damping: 30 }}
+              className="fixed top-0 left-0 w-72 max-w-[85vw] h-screen bg-[#0B1220] text-white z-50 flex flex-col"
+            >
+              {/* HEADER */}
+              <div className="flex items-center justify-between px-5 py-4 border-b border-white/10">
+                <div className="flex items-center gap-3">
+                  <div className="w-9 h-9 bg-indigo-600 rounded-xl flex items-center justify-center font-bold">
+                    CJ
+                  </div>
+                  <h2 className="font-semibold text-lg">
+                    Copper<span className="text-indigo-400">Jems</span>
+                  </h2>
+                </div>
 
-        {/* 🔴 HEADER WITH CLOSE */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-white/10">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-indigo-600 rounded-xl flex items-center justify-center font-bold">
-              CJ
-            </div>
-            <h2 className="font-semibold text-lg">
-              Copper<span className="text-indigo-400">Jems</span>
-            </h2>
-          </div>
+                <button
+                  onClick={() => setMobileOpen(false)}
+                  className="text-slate-300"
+                >
+                  ✕
+                </button>
+              </div>
 
-          {/* ❌ CLOSE BUTTON */}
-          <button
-            onClick={() => setMobileOpen(false)}
-            className="text-slate-300 hover:text-white"
-          >
-            ✕
-          </button>
-        </div>
+              {/* MENU SCROLL */}
+              <div className="flex-1 overflow-y-auto px-2 py-2">
+                <Sidebar
+                  setPage={(p) => {
+                    setPage(p);
+                    setMobileOpen(false);
+                  }}
+                  page={page}
+                  logout={logout}
+                  department={user?.department}
+                />
+              </div>
+            </motion.aside>
+          </>
+        )}
+      </AnimatePresence>
 
-        {/* MENU */}
-        <div className="flex-1 overflow-y-auto">
-          <Sidebar
-            setPage={(p) => {
-              setPage(p);
-              setMobileOpen(false);
-            }}
-            page={page}
-            logout={logout}
-          />
-        </div>
-
-      </motion.aside>
-    </>
-  )}
-</AnimatePresence>
 
 
       {/* ================= CHANGE PASSWORD MODAL ================= */}
@@ -306,7 +306,7 @@ export default function Employee() {
         )}
       </AnimatePresence>
 
-      
+
 
     </div>
   );
@@ -328,7 +328,8 @@ function Sidebar({ setPage, page, logout, department }) {
     <div className="h-full flex flex-col">
 
       {/* BRAND */}
-      <div className="px-6 py-6 flex items-center gap-3 hidden md:flex">
+
+      <div className="hidden md:flex px-6 py-6 items-center gap-3">
         <div className="w-11 h-11 rounded-xl bg-indigo-600 flex items-center justify-center">
           <span className="text-white font-bold">CJ</span>
         </div>
@@ -336,6 +337,7 @@ function Sidebar({ setPage, page, logout, department }) {
           Copper<span className="text-indigo-400">Jems</span>
         </h1>
       </div>
+
 
       {/* MENU */}
       <div className="px-4 text-sm space-y-1">
@@ -347,7 +349,7 @@ function Sidebar({ setPage, page, logout, department }) {
           <LayoutDashboard size={18} />
           Dashboard
         </button>
-{/* 
+        {/* 
         <button
           onClick={() => setPage("notifications")}
           className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition ${isActive("notifications")}`}
@@ -411,11 +413,11 @@ function Sidebar({ setPage, page, logout, department }) {
               Sell Product
             </button>
 
-             <p className="px-4 mt-6 mb-2 text-xs tracking-widest text-slate-400">
+            <p className="px-4 mt-6 mb-2 text-xs tracking-widest text-slate-400">
               CLIENT
             </p>
 
-              <button
+            <button
               onClick={() => setPage("Client")}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition ${isActive("Client")}`}
             >
