@@ -54,7 +54,7 @@ export default function AddAdmin() {
   return (
     <>
       {/* ================= FORM ================= */}
-      <div className="w-full flex justify-center px-4 pt-4">
+      <div className="w-full flex justify-center  pt-4">
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}

@@ -168,14 +168,24 @@ export default function PaymentsReceived() {
           Payments Received
         </h1>
 
-        <motion.div
-          initial={{ scale: 0.8 }}
-          animate={{ scale: 1 }}
-          className="bg-gradient-to-r from-green-500 to-emerald-600 text-white px-5 py-3 rounded-2xl shadow-xl flex items-center w-fit"
-        >
-          <FaRupeeSign />
-          {total.toLocaleString()}
-        </motion.div>
+        <div className="flex justify-end w-full">
+  <div
+    className="
+      bg-gradient-to-r from-green-500 to-emerald-600
+      text-white
+      px-4 py-2
+      rounded-2xl shadow-xl
+      flex items-center gap-2
+      w-fit
+      max-w-[90vw]
+    "
+  >
+    <FaRupeeSign className="shrink-0" />
+    <span className="whitespace-nowrap">
+      {total.toLocaleString()}
+    </span>
+  </div>
+</div>
       </div>
 
       {/* LIST */}

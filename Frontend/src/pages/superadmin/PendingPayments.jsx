@@ -33,7 +33,7 @@ export default function PendingPayments() {
   };
 
   return (
-    <div className="p-4 md:p-2 space-y-6 max-w-6xl mx-auto">
+    <div className="p-1 md:p-2 space-y-6 max-w-6xl mx-auto">
 
       {/* HEADER */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
@@ -55,10 +55,26 @@ export default function PendingPayments() {
         </div>
 
         {/* TOTAL */}
-        <div className="bg-gradient-to-r from-red-500 to-orange-500 text-white px-5 py-3 rounded-2xl shadow-xl flex items-center gap-0 w-fit">
-          <FaRupeeSign />
-           {totalPending.toLocaleString()}
-        </div>
+     <div className="flex justify-end w-full">
+  <div
+    className="
+      bg-gradient-to-r from-red-500 to-orange-500
+      text-white
+      px-4 py-2
+      rounded-2xl shadow-xl
+      flex items-center gap-2
+      w-fit
+      max-w-[90vw]
+    "
+  >
+    <FaRupeeSign className="shrink-0" />
+    <span className="whitespace-nowrap">
+      {totalPending.toLocaleString()}
+    </span>
+  </div>
+</div>
+
+
       </div>
 
       {/* EMPTY */}

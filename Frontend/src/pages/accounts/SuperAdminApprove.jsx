@@ -48,7 +48,7 @@ export default function SuperAdminApprove() {
       {/* HEADER */}
       <div className="flex items-center gap-3 mb-8">
         <FaWallet className="text-indigo-600 text-3xl" />
-        <h1 className="text-2xl font-bold">
+        <h1 className="text-2xl max-sm:text-[22px] font-bold">
           Fund Requests Approval
         </h1>
       </div>

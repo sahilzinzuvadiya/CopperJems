@@ -819,38 +819,74 @@ function CreateEmployee({ department, onCreate }) {
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 25 }}
-      animate={{ opacity: 1, y: 0 }}
-      className="max-w-xl w-full bg-white rounded-3xl shadow-xl p-10"
+  <motion.div
+  initial={{ opacity: 0, y: 25 }}
+  animate={{ opacity: 1, y: 0 }}
+  className="
+    w-full
+    max-w-xl
+    mx-auto
+    bg-white
+    rounded-3xl
+    shadow-xl
+    p-6
+    sm:p-10
+  "
+>
+  {/* HEADER */}
+  <div className="text-center mb-6">
+    <div className="mx-auto w-14 h-14 rounded-2xl bg-indigo-600 flex items-center justify-center mb-4">
+      <UserPlus className="text-white" />
+    </div>
+
+    <h2 className="text-2xl font-bold">Create Employee</h2>
+
+    <p className="text-sm text-slate-500">
+      Add employee to {department} department
+    </p>
+  </div>
+
+  {/* FORM */}
+  <div className="space-y-5 w-full">
+
+    <InputField
+      icon={<User />}
+      placeholder="Employee Name"
+      value={name}
+      onChange={setName}
+    />
+
+    <InputField
+      icon={<Mail />}
+      placeholder="Employee Email"
+      value={email}
+      onChange={setEmail}
+    />
+
+    <div className="flex items-center gap-3 bg-slate-100 px-4 py-3 rounded-xl text-sm w-full">
+      <Building2 size={18} />
+      Department: <b>{department}</b>
+    </div>
+
+    <button
+      onClick={submit}
+      className="
+        w-full
+        py-3
+        rounded-xl
+        bg-indigo-600
+        hover:bg-indigo-700
+        text-white
+        font-semibold
+        transition
+      "
     >
-      <div className="text-center mb-6">
-        <div className="mx-auto w-14 h-14 rounded-2xl bg-indigo-600 flex items-center justify-center mb-4">
-          <UserPlus className="text-white" />
-        </div>
-        <h2 className="text-2xl font-bold">Create Employee</h2>
-        <p className="text-sm text-slate-500">
-          Add employee to {department} department
-        </p>
-      </div>
+      Create Employee
+    </button>
 
-      <div className="space-y-5">
-        <InputField icon={<User />} placeholder="Employee Name" value={name} onChange={setName} />
-        <InputField icon={<Mail />} placeholder="Employee Email" value={email} onChange={setEmail} />
+  </div>
+</motion.div>
 
-        <div className="flex items-center gap-3 bg-slate-100 px-4 py-3 rounded-xl text-sm">
-          <Building2 size={18} />
-          Department: <b>{department}</b>
-        </div>
-
-        <button
-          onClick={submit}
-          className="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-semibold"
-        >
-          Create Employee
-        </button>
-      </div>
-    </motion.div>
   );
 }
 
@@ -1027,8 +1063,9 @@ function MenuItem({ icon: Icon, text, onClick }) {
 
 function InputField({ icon, placeholder, value, onChange, type = "text" }) {
   return (
-    <div className="flex items-center gap-3 bg-slate-100 px-4 py-3 rounded-xl">
+    <div className="flex items-center gap-3 bg-slate-100 px-4 py-3 rounded-xl w-full">
       <span className="text-slate-400">{icon}</span>
+
       <input
         type={type}
         value={value}
@@ -1039,3 +1076,4 @@ function InputField({ icon, placeholder, value, onChange, type = "text" }) {
     </div>
   );
 }
+
