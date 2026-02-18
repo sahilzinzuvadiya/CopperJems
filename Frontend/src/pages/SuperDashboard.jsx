@@ -112,7 +112,9 @@ export default function SuperDashboard() {
   };
 
   return (
-    <div className="p-4 md:p-3 space-y-8">
+    <div className="px-3 sm:px-4 md:px-4 py-4 space-y-6 w-full">
+
+
 
       {/* ================= HEADER ================= */}
       <div>
@@ -125,7 +127,8 @@ export default function SuperDashboard() {
       </div>
 
       {/* ================= TOP CARDS ================= */}
-      <div className="grid grid-cols-2 max-sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-3 gap-5">
+
         {topCards.map((c, i) => (
           <motion.div
             key={i}
@@ -144,131 +147,155 @@ export default function SuperDashboard() {
       </div>
 
       {/* ================= WALLET + PENDING ================= */}
-<div className="grid md:grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-1 xl:grid-cols-3 gap-5">
 
-  {/* Wallet Balance Card */}
-  <motion.div
-    whileHover={{ y: -5, scale: 1.02 }}
-    className="bg-gradient-to-br from-orange-500 to-orange-600 text-white p-6 rounded-2xl shadow-lg flex items-center justify-between"
-  >
-    <div>
-      <p className="opacity-90">Wallet Balance</p>
-      <h2 className="text-3xl font-bold mt-2">
-        ₹ {(analytics.walletBalance || 0).toLocaleString()}
-      </h2>
-    </div>
 
-    <div className="bg-white/20 p-3 rounded-xl">
-      <Wallet size={32} />
-    </div>
-  </motion.div>
+        {/* Wallet Balance Card */}
+        <motion.div
+          whileHover={{ y: -5, scale: 1.02 }}
+          className="bg-gradient-to-br from-orange-500 to-orange-600 text-white p-6 rounded-2xl shadow-lg flex items-center justify-between"
+        >
+          <div>
+            <p className="opacity-90">Wallet Balance</p>
+            <h2 className="text-3xl font-bold mt-2">
+              ₹ {(analytics.walletBalance || 0).toLocaleString()}
+            </h2>
+          </div>
 
-  {/* Pending Payments */}
-  <motion.div
-    whileHover={{ y: -5, scale: 1.02}}
-    className="bg-gradient-to-br from-red-500 to-red-600 text-white p-6 rounded-2xl shadow-lg flex items-center justify-between"
-  >
-    <div>
-      <p className="opacity-90">Pending Payments</p>
-      <h2 className="text-3xl font-bold mt-2">
-        ₹ {(analytics.pendingClientPayments || 0).toLocaleString()}
-      </h2>
-    </div>
+          <div className="bg-white/20 p-3 rounded-xl">
+            <Wallet size={32} />
+          </div>
+        </motion.div>
 
-    <div className="bg-white/20 p-3 rounded-xl">
-      <AlertCircle size={32} />
-    </div>
-  </motion.div>
+        {/* Pending Payments */}
+        <motion.div
+          whileHover={{ y: -5, scale: 1.02 }}
+          className="bg-gradient-to-br from-red-500 to-red-600 text-white p-6 rounded-2xl shadow-lg flex items-center justify-between"
+        >
+          <div>
+            <p className="opacity-90">Pending Payments</p>
+            <h2 className="text-3xl font-bold mt-2">
+              ₹ {(analytics.pendingClientPayments || 0).toLocaleString()}
+            </h2>
+          </div>
 
-  {/* 🟢 Payment Received Card */}
-  <motion.div
-    whileHover={{ y: -5, scale: 1.02 }}
-    className="bg-gradient-to-br from-emerald-500 to-green-600 text-white p-6 rounded-2xl shadow-lg flex items-center justify-between"
-  >
-    <div>
-      <p className="opacity-90">Payments Received</p>
-      <h2 className="text-3xl font-bold mt-2">
-        ₹ {(analytics.totalReceivedPayments || 0).toLocaleString()}
-      </h2>
-    </div>
+          <div className="bg-white/20 p-3 rounded-xl">
+            <AlertCircle size={32} />
+          </div>
+        </motion.div>
 
-    <div className="bg-white/20 p-3 rounded-xl">
-      <IndianRupee size={32} />
-    </div>
-  </motion.div>
+        {/* 🟢 Payment Received Card */}
+        <motion.div
+          whileHover={{ y: -5, scale: 1.02 }}
+          className="bg-gradient-to-br from-emerald-500 to-green-600 text-white p-6 rounded-2xl shadow-lg flex items-center justify-between"
+        >
+          <div>
+            <p className="opacity-90">Payments Received</p>
+            <h2 className="text-3xl font-bold mt-2">
+              ₹ {(analytics.totalReceivedPayments || 0).toLocaleString()}
+            </h2>
+          </div>
 
-</div>
+          <div className="bg-white/20 p-3 rounded-xl">
+            <IndianRupee size={32} />
+          </div>
+        </motion.div>
+
+      </div>
 
 
 
       {/* ================= TOTAL ================= */}
-      <div className="grid md:grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
 
-  {/* Total Purchase */}
-  <motion.div
-    whileHover={{ y: -5, scale: 1.02 }}
-    className="bg-indigo-600 text-white p-6 rounded-2xl shadow-lg flex items-center justify-between"
-  >
-    <div>
-      <p className="opacity-90">Total Purchase</p>
-      <h2 className="text-3xl font-bold mt-2">
-        ₹ {analytics.summary?.totalPurchase?.toLocaleString() || 0}
-      </h2>
-    </div>
 
-    <div className="bg-white/20 p-3 rounded-xl">
-      <ShoppingCart size={32} />
-    </div>
-  </motion.div>
+        {/* Total Purchase */}
+        <motion.div
+          whileHover={{ y: -5, scale: 1.02 }}
+          className="bg-indigo-600 text-white p-6 rounded-2xl shadow-lg flex items-center justify-between"
+        >
+          <div>
+            <p className="opacity-90">Total Purchase</p>
+            <h2 className="text-3xl font-bold mt-2">
+              ₹ {analytics.summary?.totalPurchase?.toLocaleString() || 0}
+            </h2>
+          </div>
 
-  {/* Total Sales */}
-  <motion.div
-    whileHover={{y: -5, scale: 1.02}}
-    className="bg-green-600 text-white p-6 rounded-2xl shadow-lg flex items-center justify-between"
-  >
-    <div>
-      <p className="opacity-90">Total Sales</p>
-      <h2 className="text-3xl font-bold mt-2">
-        ₹ {analytics.summary?.totalSales?.toLocaleString() || 0}
-      </h2>
-    </div>
+          <div className="bg-white/20 p-3 rounded-xl">
+            <ShoppingCart size={32} />
+          </div>
+        </motion.div>
 
-    <div className="bg-white/20 p-3 rounded-xl">
-      <TrendingUp size={32} />
-    </div>
-  </motion.div>
+        {/* Total Sales */}
+        <motion.div
+          whileHover={{ y: -5, scale: 1.02 }}
+          className="bg-green-600 text-white p-6 rounded-2xl shadow-lg flex items-center justify-between"
+        >
+          <div>
+            <p className="opacity-90">Total Sales</p>
+            <h2 className="text-3xl font-bold mt-2">
+              ₹ {analytics.summary?.totalSales?.toLocaleString() || 0}
+            </h2>
+          </div>
 
-</div>
+          <div className="bg-white/20 p-3 rounded-xl">
+            <TrendingUp size={32} />
+          </div>
+        </motion.div>
+
+      </div>
 
       {/* ================= CHART GRID ================= */}
-      <div className="grid md:grid-cols-1 xl:grid-cols-3 gap-6">
 
-        <div className="bg-white p-6 rounded-2xl shadow">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+
+        <div className="bg-white p-5 rounded-2xl shadow overflow-hidden">
           <h3 className="font-semibold mb-4">Purchase vs Sales</h3>
-          <Doughnut data={donutData} />
+
+          <div className="w-full overflow-x-auto">
+            <div className="w-full">
+              <Doughnut data={donutData} />
+            </div>
+          </div>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl shadow">
+        <div className="bg-white p-5 rounded-2xl shadow overflow-hidden">
           <h3 className="font-semibold mb-4">Raw Materials</h3>
-          <Pie data={rawPie} />
+
+          <div className="w-full overflow-x-auto">
+            <div className="min-w-full h-full">
+
+              <Pie data={rawPie} />
+            </div>
+          </div>
         </div>
 
-        <div className="bg-white p-6 rounded-2xl shadow">
+        <div className="bg-white p-5 rounded-2xl shadow overflow-hidden">
           <h3 className="font-semibold mb-4">Wire Types</h3>
-          <Pie data={wirePie} />
+
+          <div className="w-full overflow-x-auto">
+            <div className="w-full h-full">
+
+              <Pie data={wirePie} />
+            </div>
+          </div>
         </div>
 
       </div>
 
+
       {/* ================= MONTHLY AT BOTTOM ================= */}
-      <div className="bg-white p-6 rounded-2xl shadow">
+      <div className="bg-white p-5 rounded-2xl shadow overflow-hidden">
+
         <h3 className="font-semibold mb-4">
           Monthly Purchase vs Sales
         </h3>
-
-        <div className="h-[350px]">
-          <Bar data={barData} options={{ maintainAspectRatio:false }} />
+        <div className="h-[350px] w-full overflow-x-auto">
+          <div className="min-w-[300px] h-full">
+            <Bar data={barData} options={{ maintainAspectRatio: false }} />
+          </div>
         </div>
+
       </div>
 
     </div>

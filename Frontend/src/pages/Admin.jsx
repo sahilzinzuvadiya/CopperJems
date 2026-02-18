@@ -26,9 +26,11 @@ export default function Admin() {
   if (!data) return <div className="p-10 text-center">Loading...</div>;
 
   return (
-    <div className=" bg-slate-100 min-h-screen">
+ 
+  <div className="w-full min-w-0 px-2 md:px-2 xl:px-2">
+    
 
-      {/* HEADER */}
+    {/* HEADER */}
       <div className="rounded-2xl p-6 mb-8 bg-indigo-600 text-white shadow">
         <h1 className="text-2xl font-semibold">
           {user.department} Admin Dashboard
@@ -90,6 +92,7 @@ export default function Admin() {
           isWireType
         />
       )}
+      
     </div>
   );
 }
@@ -138,7 +141,8 @@ function DashboardUI({ cards, monthly = [], label, isWireType=false }) {
   return (
     <>
       {/* CARDS */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+      <div className="grid grid-cols-1  xl:grid-cols-3 gap-6 mb-8 w-full">
+
   {cards.map((c,i)=>(
     <div
       key={i}
@@ -160,7 +164,9 @@ function DashboardUI({ cards, monthly = [], label, isWireType=false }) {
           {isWireType ? "Production by Wire Type" : `Monthly ${label}`}
         </h3>
 
-        <div className="h-[350px]">
+       <div className="h-[350px] w-full min-w-0">
+
+
           <Bar data={barData} options={options} />
         </div>
       </div>

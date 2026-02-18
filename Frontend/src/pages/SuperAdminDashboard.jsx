@@ -48,10 +48,12 @@ export default function SuperAdminDashboard() {
 
 
   return (
-    <div className="h-screen w-full flex bg-[#F4F7FB] overflow-hidden">
+    <div className="min-h-screen w-full bg-[#F4F7FB] overflow-x-hidden">
+
 
       {/* ================= DESKTOP SIDEBAR ================= */}
-      <aside className="hidden md:flex w-72 h-screen bg-gradient-to-b from-[#0B1220] to-[#111C33] text-white flex-col">
+      <aside className="hidden md:flex fixed left-0 top-0 w-72 h-screen bg-gradient-to-b from-[#0B1220] to-[#111C33] text-white flex-col z-40">
+
         <Sidebar setPage={setPage} page={page} logout={logout} />
 
       </aside>
@@ -120,7 +122,9 @@ export default function SuperAdminDashboard() {
 
 
       {/* ================= MAIN ================= */}
-      <div className="flex-1 flex flex-col h-screen">
+      <div className="flex flex-col min-h-screen md:ml-72">
+
+
         {/* ================= TOPBAR ================= */}
         <header className="h-16 sm:h-20 bg-white shadow-sm flex items-center justify-between px-4 sm:px-6 sticky top-0 z-30">
 
@@ -212,18 +216,21 @@ export default function SuperAdminDashboard() {
 
 
         {/* ================= CONTENT ================= */}
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6">
+        <main className="flex-1 min-w-0 w-full overflow-y-auto overflow-x-hidden p-4 sm:p-6">
+
 
           {page === "dashboard" && (
             <>
               <motion.div
                 initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
-                className="rounded-3xl p-6 mb-4
-             bg-gradient-to-r from-indigo-600 to-indigo-500
-             shadow-md"
+                className="
+          rounded-3xl p-5 sm:p-6 mb-5
+          bg-gradient-to-r from-indigo-600 to-indigo-500
+          shadow-md
+        "
               >
-                <h1 className="text-2xl font-semibold text-white">
+                <h1 className="text-xl sm:text-2xl font-semibold text-white">
                   CopperJems SuperAdmin Panel
                 </h1>
 
@@ -234,35 +241,25 @@ export default function SuperAdminDashboard() {
                 <div className="mt-4 h-[3px] w-16 bg-white/70 rounded-full" />
               </motion.div>
 
-
               <SuperDashboard />
             </>
           )}
 
           {page === "create-admin" && <AddAdmin />}
-
           {page === "admins" && <AdminList />}
-
           {page === "employees" && <SuperAdminEmployee />}
-
           {page === "purchase-requests" && <SuperApprove />}
-
           {page === "payment-history" && <AccountsPaymentHistory />}
-
           {page === "rawmaterials" && <RawMaterial />}
-
           {page === "completeproduction" && <ProductionShow />}
-
           {page === "sales-history" && <SalesHistory />}
-
           {page === "Client" && <AccountClients />}
-
           {page === "fundrequest" && <SuperAdminApprove />}
-
           {page === "pending" && <PendingPayments />}
-
           {page === "received" && <PaymentsReceived />}
+
         </main>
+
       </div>
     </div>
   );
@@ -370,7 +367,7 @@ function Sidebar({ setPage, page, logout }) {
           FINANCE / AUDIT
         </p>
 
-          <button
+        <button
           onClick={() => setPage("fundrequest")}
           className={menuBtn("fundrequest")}
         >
@@ -386,7 +383,7 @@ function Sidebar({ setPage, page, logout }) {
           Payment History
         </button>
 
-      
+
 
         <Section title="MANUFACTURING" />
         <button
@@ -430,7 +427,7 @@ function Sidebar({ setPage, page, logout }) {
           Clients
         </button>
 
-         <button
+        <button
           onClick={() => setPage("pending")}
           className={menuBtn("pending")}
         >
@@ -438,7 +435,7 @@ function Sidebar({ setPage, page, logout }) {
           PendingClientPayments
         </button>
 
-             <button
+        <button
           onClick={() => setPage("received")}
           className={menuBtn("received")}
         >

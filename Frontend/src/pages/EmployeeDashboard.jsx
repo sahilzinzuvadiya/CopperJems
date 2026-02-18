@@ -31,7 +31,8 @@ export default function EmployeeDashboard() {
   }
 
   return (
-    <div className="p-4 md:p-0 bg-slate-100 min-h-screen">
+    <div className="w-full min-w-0 px-2 md:px-2 xl:px-2">
+
 
       {/* HEADER */}
       <div className="rounded-2xl p-6 mb-6 bg-gradient-to-r from-indigo-500 to-indigo-600 text-white">
@@ -130,7 +131,7 @@ function DashboardUI({ cards, monthly }) {
   return (
     <>
       {/* CARDS */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         {cards.map((c, i) => (
           <motion.div
             key={i}
@@ -152,7 +153,8 @@ function DashboardUI({ cards, monthly }) {
           Monthly Activity
         </h3>
 
-        <div className="h-[320px]">
+        <div className="h-[320px] w-full min-w-0">
+
           <Bar data={chartData} options={chartOptions} />
         </div>
       </div>

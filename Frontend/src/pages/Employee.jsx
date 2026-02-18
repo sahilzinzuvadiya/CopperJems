@@ -83,15 +83,16 @@ export default function Employee() {
   if (!user) return null;
 
   return (
-    <div className="h-screen flex bg-[#F4F7FB] overflow-hidden">
+    <div className="min-h-screen w-full bg-[#F4F7FB] overflow-x-hidden">
 
       {/* ================= SIDEBAR (DESKTOP) ================= */}
-      <aside className="hidden md:flex w-72 bg-[#0B1220] text-white flex-col">
+      <aside className="hidden md:flex fixed left-0 top-0 w-72 h-screen bg-[#0B1220] text-white flex-col z-40">
+
         <Sidebar setPage={setPage} page={page} logout={logout} department={user?.department} />
       </aside>
 
       {/* ================= MAIN ================= */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex flex-col min-h-screen md:ml-72 flex-1 min-w-0">
 
         {/* ================= TOPBAR ================= */}
         <header className="h-16 bg-white shadow-sm flex items-center justify-between px-6">
@@ -166,7 +167,8 @@ export default function Employee() {
         </header>
 
         {/* ================= CONTENT ================= */}
-        <main className="flex-1 overflow-y-auto p-6">
+      <main className="flex-1 min-w-0 overflow-y-auto p-4 sm:p-6">
+
           {page === "dashboard" && (
             <>
             

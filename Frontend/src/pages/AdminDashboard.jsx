@@ -195,13 +195,13 @@ export default function AdminDashboard() {
   if (!user) return null;
 
   return (
-    <div className="h-screen flex bg-[#F4F7FB] overflow-hidden">
+    <div className="min-h-screen w-full bg-[#F4F7FB] overflow-x-hidden">
+
 
       {/* ================= SIDEBAR ================= */}
-      <aside className="hidden md:flex w-72 bg-[#0B1220] text-white flex-col">
+      <aside className="hidden md:flex fixed left-0 top-0 w-72 h-screen bg-[#0B1220] text-white flex-col z-40">
 
-
-        {/* <div className="px-6 py-6 flex items-center gap-3">
+      {/* <div className="px-6 py-6 flex items-center gap-3">
           <div className="w-11 h-11 rounded-xl bg-indigo-600 flex items-center justify-center">
             <span className="text-white font-bold">CJ</span>
           </div>
@@ -272,9 +272,9 @@ export default function AdminDashboard() {
 
 
       {/* ================= MAIN ================= */}
-      <div className="flex-1 flex flex-col">
+      <div className="flex flex-col min-h-screen md:ml-72 flex-1 min-w-0">
 
-        {/* ================= TOPBAR ================= */}
+      {/* ================= TOPBAR ================= */}
         <header className="h-16 bg-white shadow-sm flex items-center justify-between px-6">
           <button onClick={() => setMobileOpen(true)} className="md:hidden">
             <Menu />
@@ -392,9 +392,10 @@ export default function AdminDashboard() {
 
 
         {/* ================= CONTENT ================= */}
-        <main className="flex-1 overflow-y-auto p-6">
+       <main className="flex-1 min-w-0 overflow-y-auto p-4 sm:p-6">
 
-          {page === "dashboard" && (
+
+      {page === "dashboard" && (
             <>
               {/* <div className="bg-white rounded-2xl shadow p-6">
               <h1 className="text-xl font-bold">
