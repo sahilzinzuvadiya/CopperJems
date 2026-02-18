@@ -41,14 +41,38 @@ export default function NotificationBell() {
       </motion.button>
 
       {/* PANEL */}
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            initial={{ opacity: 0, y: 15, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 10 }}
-            className="absolute right-0 mt-4 w-[380px] max-w-[95vw] bg-white/80 backdrop-blur-2xl border border-white/30 shadow-2xl rounded-3xl overflow-hidden z-50"
-          >
+    <AnimatePresence>
+  {open && (
+    <motion.div
+      initial={{ opacity: 0, y: 15, scale: 0.95 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      exit={{ opacity: 0, y: 10 }}
+      className="
+        fixed
+        top-16
+        left-2 right-2
+        mx-auto
+        w-auto
+        max-w-[95vw]
+
+        md:absolute
+        md:top-14
+        md:right-[-50px]
+        md:left-auto
+        md:mx-0
+        md:w-[380px]
+
+        lg:right-0
+        lg:top-auto
+
+        bg-white/80 backdrop-blur-2xl
+        border border-white/30
+        shadow-2xl rounded-3xl
+        overflow-hidden z-[999]
+      "
+    >
+
+
             {/* HEADER */}
             <div className="flex items-center justify-between px-5 py-4 bg-gradient-to-r from-indigo-500 to-purple-600 text-white">
               <div>

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const instance = axios.create({
-  baseURL: "https://copperjems.onrender.com/api",
+  baseURL: "http://localhost:1005/api",
 });
 
 /* ✅ AUTO ATTACH TOKEN */
