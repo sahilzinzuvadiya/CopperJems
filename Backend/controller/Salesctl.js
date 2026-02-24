@@ -60,49 +60,6 @@ exports.getSaleStock = async (req, res) => {
   res.json(result);
 };
 
-// exports.sellProduct = async (req, res) => {
-
-//   try {
-//     const { id, qty, clientId, ratePerTon } = req.body;
-
-//     const item = await FinishedGoods.findById(id);
-//     if (!item) return res.status(404).json({ msg: "Stock not found" });
-
-//     const available = item.totalQty - item.soldQty;
-
-//     if (Number(qty) > available) {
-//       return res.status(400).json({ msg: "Not enough stock" });
-//     }
-
-//     // update stock
-//     item.soldQty += Number(qty);
-//     await item.save();
-
-//     // check auth user
-//     if (!req.user || !req.user.id) {
-//       return res.status(401).json({ msg: "User missing in request" });
-//     }
-
-//     // 🔥 calculate total
-//     const totalAmount = Number(qty) * Number(ratePerTon);
-
-//     await Sale.create({
-//       wireType: item.wireType,
-//       qty: Number(qty),
-//       ratePerTon: Number(ratePerTon),
-//       totalAmount: totalAmount,
-//       soldBy: req.user.id,
-//       client: clientId,
-//       finishedGoodsId: item._id
-//     });
-
-//     res.json({ success: true });
-
-//   } catch (err) {
-//     console.log(err);
-//     res.status(500).json({ msg: err.message });
-//   }
-// };
 exports.sellProduct = async (req, res) => {
   try {
     const { id, qty, clientId, ratePerTon } = req.body;
@@ -186,8 +143,14 @@ exports.sellProduct = async (req, res) => {
   }
 };
 
+// GET /account/pending-sales
+exports.getPendingSales = async (req, res) => {
+  const sales = await Sale.find({ invoiceCreated: false })
+    .populate("client", "name phone creditDays")
+    .sort({ createdAt: -1 });
 
-
+  res.json(sales);
+};
 
 
 exports.getSalesHistory = async (req, res) => {

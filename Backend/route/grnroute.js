@@ -3,16 +3,26 @@ const router = express.Router();
 const PurchaseRequest = require("../modal/PurchaseRequest");
 const protect = require("../middleware/authmiddleware");
 const calculateReceiptStatus = require("../utils/grnhelper");
-const  createNotification  = require("../utils/CreateNotification");
+const createNotification = require("../utils/CreateNotification");
 
 
 /* GET PRs READY FOR RECEIVING */
 router.get("/grn-pending", protect, async (req, res) => {
-  const prs = await PurchaseRequest.find({
-    status: { $in: ["PAYMENT_COMPLETED", "RECEIVING_IN_PROGRESS", "SUPERADMIN_APPROVED"] }
-  });
+  try {
+    const prs = await PurchaseRequest.find({
+      status: {
+        $in: [
+          "SUPERADMIN_APPROVED",
+          "RECEIVING_IN_PROGRESS",
+          "PAYMENT_PENDING"
+        ]
+      }
+    }).sort({ createdAt: -1 });
 
-  res.json(prs);
+    res.json(prs);
+  } catch (err) {
+    res.status(500).json({ msg: "Server error" });
+  }
 });
 
 /* ADD NEW GRN (WORKS FOR FULL OR PARTIAL) */
@@ -34,14 +44,13 @@ router.post("/grn/:id", protect, async (req, res) => {
 
     const remaining = pr.quantity - pr.quantityReceived;
 
-    /* 🚫 VALIDATION */
     if (receivedQty + damagedQty > remaining) {
       return res.status(400).json({
         msg: `Cannot receive more than remaining ${remaining}`
       });
     }
 
-    /* 🟢 SAVE GRN */
+    /* SAVE GRN */
     pr.grns.push({
       receivedQty,
       damagedQty,
@@ -55,17 +64,21 @@ router.post("/grn/:id", protect, async (req, res) => {
     let fullReceived = false;
 
     if (pr.quantityReceived >= pr.quantity) {
-      pr.status = "RAW_MATERIAL_RECEIVED";
       fullReceived = true;
+
+      /* START CREDIT CYCLE */
+      const due = new Date();
+      due.setDate(due.getDate() + Number(pr.creditDays || 0));
+
+      pr.dueDate = due;
+      pr.status = "PAYMENT_PENDING";
     } else {
       pr.status = "RECEIVING_IN_PROGRESS";
     }
 
     await pr.save();
 
-    /* =====================================================
-        🔔 NOTIFY EMPLOYEE (MOST IMPORTANT)
-    ===================================================== */
+    /* NORMAL NOTIFICATIONS */
     await createNotification({
       title: "Material Received",
       message: `${receivedQty} received for ${pr.materialName}`,
@@ -75,9 +88,6 @@ router.post("/grn/:id", protect, async (req, res) => {
       type: "GRN"
     });
 
-    /* =====================================================
-        🔔 NOTIFY PURCHASE ADMIN
-    ===================================================== */
     await createNotification({
       title: "Material Received",
       message: `${receivedQty} received for ${pr.materialName}`,
@@ -86,15 +96,32 @@ router.post("/grn/:id", protect, async (req, res) => {
       type: "GRN"
     });
 
-    /* =====================================================
-        🔔 IF FULLY RECEIVED → SUPERADMIN
-    ===================================================== */
+    /* 🔥 FULL RECEIVED NOTIFICATIONS */
     if (fullReceived) {
+
+      // superadmin
       await createNotification({
         title: "Material Fully Received",
         message: `${pr.materialName} fully received`,
         roleTarget: "superadmin",
         type: "GRN"
+      });
+
+      // ACCOUNT ADMIN (IMPORTANT)
+      await createNotification({
+        title: "Credit Cycle Started",
+        message: `Credit cycle started for ${pr.materialName}. Payment due on ${pr.dueDate.toDateString()}`,
+        roleTarget: "admin",
+        departmentTarget: "Account",
+        type: "PAYMENT"
+      });
+
+      // SUPERADMIN PAYMENT ALERT
+      await createNotification({
+        title: "Payment Scheduled",
+        message: `${pr.materialName} payment scheduled on ${pr.dueDate.toDateString()}`,
+        roleTarget: "superadmin",
+        type: "PAYMENT"
       });
     }
 

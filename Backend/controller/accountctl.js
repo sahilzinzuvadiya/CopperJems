@@ -4,6 +4,7 @@ const Invoice = require("../modal/Invoice");
 const createNotification = require("../utils/CreateNotification");
 const FundRequest = require("../modal/fundRequestSchema")
 const Admin = require("../modal/admin")
+const Sale = require("../modal/Sale");
 
 
 /**
@@ -11,14 +12,9 @@ const Admin = require("../modal/admin")
  */
 exports.getApprovedCashPRs = async (req, res) => {
   try {
-    // console.log("ACCOUNT USER:", req.user);
-
     const prs = await PurchaseRequest.find({
-      status: "SUPERADMIN_APPROVED",
-
-    });
-
-    // console.log("FOUND PRS:", prs);
+      status: "PAYMENT_PENDING"
+    }).populate("vendor", "name");
 
     res.json(prs);
   } catch (err) {
@@ -26,79 +22,71 @@ exports.getApprovedCashPRs = async (req, res) => {
   }
 };
 
+// exports.markCashPaid = async (req, res) => {
+//   try {
+//     const { receiptNo } = req.body;
 
-exports.markCashPaid = async (req, res) => {
-  try {
-    const { receiptNo } = req.body;
+//     if (!receiptNo)
+//       return res.status(400).json({ message: "Receipt required" });
 
-    if (!receiptNo) {
-      return res.status(400).json({ message: "Receipt number required" });
-    }
+//     const pr = await PurchaseRequest.findById(req.params.id);
+//     if (!pr) return res.status(404).json({ message: "PR not found" });
 
-    const pr = await PurchaseRequest.findById(req.params.id);
-    if (!pr) {
-      return res.status(404).json({ message: "PR not found" });
-    }
+//     if (pr.status !== "PAYMENT_PENDING")
+//       return res.status(400).json({ message: "Invalid status" });
 
-    /* ===== FIND ACCOUNT ADMIN ===== */
-    const accountAdmin = await Admin.findOne({
-      department: "Account",
-      role: "admin"
-    });
+//     /* ===== GET LOGGED ACCOUNT ADMIN ===== */
+//     const accountAdmin = await Admin.findById(req.user.id);
+//     if (!accountAdmin)
+//       return res.status(404).json({ message: "Admin not found" });
 
-    if (!accountAdmin) {
-      return res.status(404).json({ message: "Account admin not found" });
-    }
+//     const total = Number(pr.totalAmount || 0);
 
-    /* ===== TOTAL PRICE ===== */
-    const totalAmount = (pr.quantity || 0) * (pr.expectedPrice || 0);
+//     if ((accountAdmin.walletBalance || 0) < total) {
+//       return res.status(400).json({
+//         message: `Wallet low. Need ₹${total}`
+//       });
+//     }
 
-    /* ❌ WALLET LOW → STOP PAYMENT */
-    if (accountAdmin.walletBalance < totalAmount) {
-      return res.status(400).json({
-        message: `Wallet balance low. Need ₹${totalAmount}, available ₹${accountAdmin.walletBalance}`
-      });
-    }
+//     /* ===== CUT WALLET ===== */
+//     accountAdmin.walletBalance =
+//       Number(accountAdmin.walletBalance || 0) - total;
 
-    /* ===== CUT WALLET ===== */
-    accountAdmin.walletBalance -= totalAmount;
-    await accountAdmin.save();
+//     await accountAdmin.save();
 
-    /* ===== SAVE PAYMENT ===== */
-    pr.paymentDetails = {
-      receiptNo,
-      paymentDate: new Date(),
-      paidBy: req.user.id
-    };
+//     /* ===== SAVE PAYMENT ===== */
+//     pr.paymentDetails.receiptNo = receiptNo;
+//     pr.paymentDetails.paymentDate = new Date();
+//     pr.paymentDetails.paidBy = accountAdmin._id;
+//     pr.paymentDetails.amount = total;
 
-    pr.status = "PAYMENT_COMPLETED";
-    await pr.save();
+//     pr.status = "PAYMENT_COMPLETED";
+//     pr.paymentDone = true;
 
-    res.json({
-      success: true,
-      walletBalance: accountAdmin.walletBalance
-    });
+//     await pr.save();
 
-  } catch (err) {
-    console.log("PAY ERROR:", err);
-    res.status(500).json({ message: err.message });
-  }
-};
+//     res.json({
+//       success: true,
+//       walletBalance: accountAdmin.walletBalance
+//     });
 
-
+//   } catch (err) {
+//     console.log(err);
+//     res.status(500).json({ message: err.message });
+//   }
+// };
 
 // GET PAYMENT HISTORY (completed payments)
 exports.getPaymentHistory = async (req, res) => {
   try {
     const prs = await PurchaseRequest.find({
-      "paymentDetails.receiptNo": { $exists: true }
+      status: "PAYMENT_COMPLETED"
     })
       .populate("paymentDetails.paidBy", "name email")
       .sort({ "paymentDetails.paymentDate": -1 });
 
     res.json(prs);
   } catch (err) {
-    console.error("Payment history error:", err);
     res.status(500).json({ message: "Server error" });
   }
 };
@@ -183,9 +171,65 @@ exports.deleteClient = async (req, res) => {
 
 
 // CREATE INVOICE (after product taken)
+// exports.createInvoice = async (req, res) => {
+//   try {
+//     const { clientId, wireType, qty, rate } = req.body;
+
+//     if (!clientId || !wireType || !qty || !rate) {
+//       return res.status(400).json({ msg: "Missing fields" });
+//     }
+
+//     const client = await Client.findById(clientId);
+//     if (!client) {
+//       return res.status(404).json({ msg: "Client not found" });
+//     }
+
+//     const total = Number(qty) * Number(rate);
+
+//     // due date from credit days
+//     const dueDate = new Date();
+//     dueDate.setDate(dueDate.getDate() + (client.creditDays || 0));
+
+//     const invoiceNo = "INV" + Date.now();
+
+//     const invoice = await Invoice.create({
+//       client: clientId,
+//       wireType,
+//       qty: Number(qty),
+//       rate: Number(rate),
+//       total,
+//       invoiceNo,
+//       dueDate
+//     });
+
+//     /* 🔔 SUPERADMIN NOTIFICATION */
+//     await createNotification({
+//       title: "Invoice Created",
+//       message: `${invoice.invoiceNo} created for ${client.name} | ₹${total}`,
+//       roleTarget: "superadmin",
+//       type: "INVOICE"
+//     });
+
+//     // 🔗 invoice pdf url (if you generate pdf later)
+//     const invoiceUrl = `${process.env.BASE_URL}/invoice/${invoice._id}`;
+
+//     res.json({
+//       invoice,
+//       invoiceUrl,
+//       clientPhone: client.phone,
+//       clientName: client.name,
+//       total,
+//       invoiceNo
+//     });
+
+//   } catch (err) {
+//     console.log("INVOICE ERROR:", err);
+//     res.status(500).json({ msg: err.message });
+//   }
+// };
 exports.createInvoice = async (req, res) => {
   try {
-    const { clientId, wireType, qty, rate } = req.body;
+    const { clientId, wireType, qty, rate, saleId } = req.body;
 
     if (!clientId || !wireType || !qty || !rate) {
       return res.status(400).json({ msg: "Missing fields" });
@@ -211,8 +255,18 @@ exports.createInvoice = async (req, res) => {
       rate: Number(rate),
       total,
       invoiceNo,
-      dueDate
+      dueDate,
+      saleRef: saleId || null   // 🔥 link sale
     });
+
+    /* 🔥 MARK SALE AS INVOICED */
+    if (saleId) {
+      const sale = await Sale.findById(saleId);
+      if (sale) {
+        sale.invoiceCreated = true;
+        await sale.save();
+      }
+    }
 
     /* 🔔 SUPERADMIN NOTIFICATION */
     await createNotification({
@@ -222,7 +276,6 @@ exports.createInvoice = async (req, res) => {
       type: "INVOICE"
     });
 
-    // 🔗 invoice pdf url (if you generate pdf later)
     const invoiceUrl = `${process.env.BASE_URL}/invoice/${invoice._id}`;
 
     res.json({
@@ -420,8 +473,6 @@ exports.getFundRequests = async (req, res) => {
     res.status(500).json({ msg: err.message });
   }
 };
-
-
 /* =====================================================
    GET PENDING PAYMENTS WITH FULL INFO
 ===================================================== */

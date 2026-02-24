@@ -59,8 +59,10 @@ export default function GRNReceive() {
   };
 
   /* ================= CALCULATE ================= */
-const totalReceived = (grns = []) =>
-  grns.reduce((sum, g) => sum + g.receivedQty + (g.damagedQty || 0), 0);
+  const totalReceived = (grns = []) =>
+    grns.reduce((sum, g) => sum + g.receivedQty + (g.damagedQty || 0), 0);
+
+
 
 
   return (
@@ -90,6 +92,7 @@ const totalReceived = (grns = []) =>
           const received = totalReceived(p.grns);
           const pending = p.quantity - received;
           const percent = ((received / p.quantity) * 100).toFixed(1);
+          const isFullyReceived = received >= p.quantity;
 
           return (
             <div key={p._id} className="bg-white p-6 rounded-2xl shadow">
@@ -110,80 +113,97 @@ const totalReceived = (grns = []) =>
                 />
               </div>
 
-              <button
-                onClick={() => setActivePR(p)}
-                className="mt-5 w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg"
-              >
-                <FaPlusCircle />
-                Add Receipt
-              </button>
+              {isFullyReceived ? (
+                <div className="mt-5 bg-green-50 text-green-700 px-4 py-3 rounded-lg text-sm">
+                  ✅ Material fully received
+                  <br />
+                  Credit cycle started
+                  {p.dueDate && (
+                    <>
+                      <br />
+                      Payment due on:{" "}
+                      <b>
+                        {new Date(p.dueDate).toLocaleDateString()}
+                      </b>
+                    </>
+                  )}
+                </div>
+              ) : (
+                <button
+                  onClick={() => setActivePR(p)}
+                  className="mt-5 w-full flex items-center justify-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg"
+                >
+                  <FaPlusCircle />
+                  Add Receipt
+                </button>
+              )}
             </div>
           );
         })}
       </div>
 
       {/* MODAL */}
-     {/* MODAL */}
-{activePR && (
-  <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
-    <div className="bg-white w-full max-w-md rounded-2xl p-6 relative">
+      {/* MODAL */}
+      {activePR && (
+        <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
+          <div className="bg-white w-full max-w-md rounded-2xl p-6 relative">
 
-      {/* CLOSE X BUTTON */}
-      <button
-        onClick={() => setActivePR(null)}
-        className="absolute top-3 right-3 text-gray-500 hover:text-black text-xl"
-      >
-        ✕
-      </button>
+            {/* CLOSE X BUTTON */}
+            <button
+              onClick={() => setActivePR(null)}
+              className="absolute top-3 right-3 text-gray-500 hover:text-black text-xl"
+            >
+              ✕
+            </button>
 
-      <h2 className="text-xl font-bold mb-3">Receive Material</h2>
-      <p className="text-sm text-gray-500 mb-4">
-        {activePR.materialName}
-      </p>
+            <h2 className="text-xl font-bold mb-3">Receive Material</h2>
+            <p className="text-sm text-gray-500 mb-4">
+              {activePR.materialName}
+            </p>
 
-      <div className="space-y-3">
-        <input
-          type="number"
-          placeholder="Received Qty"
-          value={receivedQty}
-          onChange={(e) => setReceivedQty(e.target.value)}
-          className="w-full border px-4 py-2 rounded-lg"
-        />
+            <div className="space-y-3">
+              <input
+                type="number"
+                placeholder="Received Qty"
+                value={receivedQty}
+                onChange={(e) => setReceivedQty(e.target.value)}
+                className="w-full border px-4 py-2 rounded-lg"
+              />
 
-        <input
-          type="number"
-          placeholder="Damaged Qty"
-          value={damagedQty}
-          onChange={(e) => setDamagedQty(e.target.value)}
-          className="w-full border px-4 py-2 rounded-lg"
-        />
+              <input
+                type="number"
+                placeholder="Damaged Qty"
+                value={damagedQty}
+                onChange={(e) => setDamagedQty(e.target.value)}
+                className="w-full border px-4 py-2 rounded-lg"
+              />
 
-        <textarea
-          placeholder="Remarks"
-          value={remarks}
-          onChange={(e) => setRemarks(e.target.value)}
-          className="w-full border px-4 py-2 rounded-lg"
-        />
-      </div>
+              <textarea
+                placeholder="Remarks"
+                value={remarks}
+                onChange={(e) => setRemarks(e.target.value)}
+                className="w-full border px-4 py-2 rounded-lg"
+              />
+            </div>
 
-      <div className="flex justify-end gap-3 mt-5">
-        <button
-          onClick={() => setActivePR(null)}
-          className="px-4 py-2 border rounded-lg"
-        >
-          Cancel
-        </button>
+            <div className="flex justify-end gap-3 mt-5">
+              <button
+                onClick={() => setActivePR(null)}
+                className="px-4 py-2 border rounded-lg"
+              >
+                Cancel
+              </button>
 
-        <button
-          onClick={submitGRN}
-          className="px-4 py-2 bg-indigo-600 text-white rounded-lg"
-        >
-          Save Receipt
-        </button>
-      </div>
-    </div>
-  </div>
-)}
+              <button
+                onClick={submitGRN}
+                className="px-4 py-2 bg-indigo-600 text-white rounded-lg"
+              >
+                Save Receipt
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );

@@ -21,6 +21,12 @@ const SaleSchema = new mongoose.Schema({
     ref: "FinishedGoods"
   },
 
+  invoiceCreated: {
+  type: Boolean,
+  default: false
+},
+
+
   createdAt: { type: Date, default: Date.now }
 });
 

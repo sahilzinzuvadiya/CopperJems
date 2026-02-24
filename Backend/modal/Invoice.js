@@ -18,6 +18,11 @@ const InvoiceSchema = new mongoose.Schema({
     default: Date.now
   },
 
+  saleRef: {
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "Sale"
+},
+
   dueDate: Date,
 
   pdf: String,

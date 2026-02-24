@@ -39,6 +39,7 @@ app.use("/api/generateinvoice", require("./route/generateinvoiceroute"));
 app.use("/api/superadmin", require("./route/SuperAdminDashboardRoute"));
 app.use("/api/admindashboard", require("./route/AdminDashboardRoute"));
 app.use("/api/employeedashboard", require("./route/EmployeeDashboardRoute"));
+app.use("/api/vendor", require("./route/Vendorroute"));
 
 
 

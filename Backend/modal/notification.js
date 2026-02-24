@@ -38,7 +38,10 @@ const notificationSchema = new mongoose.Schema(
     "STOCK",
     "SALE",
     "CLIENT",
-    "EMPLOYEE"
+    "EMPLOYEE",
+    "PR",
+    "PO",
+    "PO_MSG"
   ],
   default: "INFO"
 },

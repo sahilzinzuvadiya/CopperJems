@@ -17,7 +17,9 @@ import {
   Pencil,
   FileText,
   CheckCircle,
-  Wallet
+  Wallet,
+  FileClock,
+  FilePlus
 } from "lucide-react";
 import { jwtDecode } from "jwt-decode";
 import axios from "../api/axios";
@@ -40,6 +42,12 @@ import AccountClients from "./sales/AccountClients";
 import PurchaseRequest from "./employee/PurchaseRequest";
 import Admin from "./Admin";
 import PaymentReminder from "./accounts/PaymentReminder";
+import AccountsSalesList from "./accounts/AccountsSalesList";
+import CreateVendor from "./Purchase/CreateVendor";
+import VendorList from "./Purchase/VendorList";
+import CreatePo from "./Purchase/CreatePo";
+import PoReadyList from "./Purchase/POReadyList";
+import SendVendorMessage from "./accounts/SendVendorMessage";
 
 /* ======================= MAIN ======================= */
 
@@ -56,6 +64,9 @@ export default function AdminDashboard() {
   const [wallet, setWallet] = useState(0);
   const [oldPass, setOldPass] = useState("");
   const [newPass, setNewPass] = useState("");
+  const [saleData, setSaleData] = useState(null);
+  const [selectedPR, setSelectedPR] = useState(null);
+
 
   useEffect(() => {
     if (user?.department === "Account") {
@@ -201,7 +212,7 @@ export default function AdminDashboard() {
       {/* ================= SIDEBAR ================= */}
       <aside className="hidden md:flex fixed left-0 top-0 w-72 h-screen bg-[#0B1220] text-white flex-col z-40">
 
-      {/* <div className="px-6 py-6 flex items-center gap-3">
+        {/* <div className="px-6 py-6 flex items-center gap-3">
           <div className="w-11 h-11 rounded-xl bg-indigo-600 flex items-center justify-center">
             <span className="text-white font-bold">CJ</span>
           </div>
@@ -274,7 +285,7 @@ export default function AdminDashboard() {
       {/* ================= MAIN ================= */}
       <div className="flex flex-col min-h-screen md:ml-72 flex-1 min-w-0">
 
-      {/* ================= TOPBAR ================= */}
+        {/* ================= TOPBAR ================= */}
         <header className="h-16 bg-white shadow-sm flex items-center justify-between px-6">
           <button onClick={() => setMobileOpen(true)} className="md:hidden">
             <Menu />
@@ -392,10 +403,10 @@ export default function AdminDashboard() {
 
 
         {/* ================= CONTENT ================= */}
-       <main className="flex-1 min-w-0 overflow-y-auto p-4 sm:p-6">
+        <main className="flex-1 min-w-0 overflow-y-auto p-4 sm:p-6">
 
 
-      {page === "dashboard" && (
+          {page === "dashboard" && (
             <>
               {/* <div className="bg-white rounded-2xl shadow p-6">
               <h1 className="text-xl font-bold">
@@ -428,6 +439,29 @@ export default function AdminDashboard() {
             <AdminApprovals />
           )}
 
+          {page === "createvendor" && user.department === "Purchase" && (
+            <CreateVendor />
+          )}
+
+          {page === "vendors" && user.department === "Purchase" && (
+            <VendorList />
+          )}
+
+          {page === "createpo" && user.department === "Purchase" && selectedPR && (
+            <CreatePo
+              prData={selectedPR}
+              onSuccess={() => {
+                setPage("po-list");
+                setSelectedPR(null);
+              }}
+            />
+          )}
+
+          {page === "po-list" && user.department === "Purchase" && (
+            <PoReadyList setSelectedPR={setSelectedPR} setPage={setPage} />
+          )}
+
+
           {page === "accountspayment" && user.department === "Account" && (
             <AccountsPayment />
           )}
@@ -444,7 +478,7 @@ export default function AdminDashboard() {
 
           {page === "create-invoice" &&
             user.department === "Account" && (
-              <AccountsCreateInvoice />
+              <AccountsCreateInvoice saleData={saleData} />
             )}
 
           {page === "pending-payments" &&
@@ -489,6 +523,14 @@ export default function AdminDashboard() {
 
           {page === "client" && user.department === "Account" && (
             <AccountClients />
+          )}
+
+           {page === "vendormsg" && user.department === "Account" && (
+            <SendVendorMessage />
+          )}
+
+          {page === "pendinginvoice" && user.department === "Account" && (
+            <AccountsSalesList setSaleData={setSaleData} setPage={setPage} />
           )}
 
 
@@ -722,6 +764,14 @@ function Sidebar({ setPage, page, logout, department }) {
               <Users size={18} />Clients
             </button>
 
+            <button onClick={() => setPage("vendormsg")} className={menuClass("vendormsg")}>
+              <FaWhatsapp size={18} /> Send Massage To Vendor
+            </button>
+
+            <button onClick={() => setPage("pendinginvoice")} className={menuClass("pendinginvoice")}>
+              <FileClock size={18} />PendingInvoice
+            </button>
+
             <button onClick={() => setPage("create-invoice")} className={menuClass("create-invoice")}>
               <FaFileInvoice size={18} /> Generate Bill
             </button>
@@ -789,6 +839,20 @@ function Sidebar({ setPage, page, logout, department }) {
               <CheckCircle size={18} /> Purchase Request
             </button>
 
+            <button onClick={() => setPage("po-list")} className={menuClass("po-list")}>
+              <FilePlus size={18} /> Create PurchaseOrder
+            </button>
+
+            <Section title="Vendor" />
+
+            <button onClick={() => setPage("createvendor")} className={menuClass("createvendor")}>
+              <UserPlus size={18} /> Create Vendor
+            </button>
+
+            <button onClick={() => setPage("vendors")} className={menuClass("vendors")}>
+              <Building2 size={18} /> Vendors
+            </button>
+
 
           </>
         )}
@@ -819,10 +883,10 @@ function CreateEmployee({ department, onCreate }) {
   };
 
   return (
-  <motion.div
-  initial={{ opacity: 0, y: 25 }}
-  animate={{ opacity: 1, y: 0 }}
-  className="
+    <motion.div
+      initial={{ opacity: 0, y: 25 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="
     w-full
     max-w-xl
     mx-auto
@@ -832,45 +896,45 @@ function CreateEmployee({ department, onCreate }) {
     p-6
     sm:p-10
   "
->
-  {/* HEADER */}
-  <div className="text-center mb-6">
-    <div className="mx-auto w-14 h-14 rounded-2xl bg-indigo-600 flex items-center justify-center mb-4">
-      <UserPlus className="text-white" />
-    </div>
+    >
+      {/* HEADER */}
+      <div className="text-center mb-6">
+        <div className="mx-auto w-14 h-14 rounded-2xl bg-indigo-600 flex items-center justify-center mb-4">
+          <UserPlus className="text-white" />
+        </div>
 
-    <h2 className="text-2xl font-bold">Create Employee</h2>
+        <h2 className="text-2xl font-bold">Create Employee</h2>
 
-    <p className="text-sm text-slate-500">
-      Add employee to {department} department
-    </p>
-  </div>
+        <p className="text-sm text-slate-500">
+          Add employee to {department} department
+        </p>
+      </div>
 
-  {/* FORM */}
-  <div className="space-y-5 w-full">
+      {/* FORM */}
+      <div className="space-y-5 w-full">
 
-    <InputField
-      icon={<User />}
-      placeholder="Employee Name"
-      value={name}
-      onChange={setName}
-    />
+        <InputField
+          icon={<User />}
+          placeholder="Employee Name"
+          value={name}
+          onChange={setName}
+        />
 
-    <InputField
-      icon={<Mail />}
-      placeholder="Employee Email"
-      value={email}
-      onChange={setEmail}
-    />
+        <InputField
+          icon={<Mail />}
+          placeholder="Employee Email"
+          value={email}
+          onChange={setEmail}
+        />
 
-    <div className="flex items-center gap-3 bg-slate-100 px-4 py-3 rounded-xl text-sm w-full">
-      <Building2 size={18} />
-      Department: <b>{department}</b>
-    </div>
+        <div className="flex items-center gap-3 bg-slate-100 px-4 py-3 rounded-xl text-sm w-full">
+          <Building2 size={18} />
+          Department: <b>{department}</b>
+        </div>
 
-    <button
-      onClick={submit}
-      className="
+        <button
+          onClick={submit}
+          className="
         w-full
         py-3
         rounded-xl
@@ -880,12 +944,12 @@ function CreateEmployee({ department, onCreate }) {
         font-semibold
         transition
       "
-    >
-      Create Employee
-    </button>
+        >
+          Create Employee
+        </button>
 
-  </div>
-</motion.div>
+      </div>
+    </motion.div>
 
   );
 }

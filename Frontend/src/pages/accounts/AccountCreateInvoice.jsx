@@ -12,9 +12,15 @@ import {
   FaWhatsapp
 } from "react-icons/fa";
 
-export default function AccountsCreateInvoice() {
+
+
+export default function AccountsCreateInvoice({ saleData }) {
   const [clients, setClients] = useState([]);
   const [loading, setLoading] = useState(false);
+
+
+  const isFromSale = !!saleData;   
+
 
   const [invoiceData, setInvoiceData] = useState(null); // NEW
 
@@ -23,8 +29,25 @@ export default function AccountsCreateInvoice() {
     wireType: "",
     qty: "",
     rate: "",
-    creditDays: ""
+    creditDays: "",
+    saleId: ""   // 🔥 important
   });
+
+  useEffect(() => {
+  if (!saleData) return;
+
+  setForm({
+    clientId: saleData.client._id,
+    wireType: saleData.wireType,
+    qty: saleData.qty,
+    rate: saleData.ratePerTon,
+    creditDays: saleData.client.creditDays,
+    saleId: saleData._id
+  });
+}, [saleData]);
+
+
+
 
   const total = Number(form.qty || 0) * Number(form.rate || 0);
 
@@ -59,8 +82,10 @@ export default function AccountsCreateInvoice() {
         wireType: "",
         qty: "",
         rate: "",
-        creditDays: ""
+        creditDays: "",
+        saleId: ""
       });
+
 
     } catch (err) {
       toast.error("Error generating invoice");
@@ -151,11 +176,12 @@ Please record in accounts.
               <FaUser className="absolute left-3 top-3 text-gray-400" />
               <select
                 value={form.clientId}
-                onChange={(e)=>selectClient(e.target.value)}
+                disabled={isFromSale}
+                onChange={(e) => selectClient(e.target.value)}
                 className="w-full border rounded-lg pl-10 pr-3 py-2"
               >
                 <option value="">Select Client</option>
-                {clients.map(c=>(
+                {clients.map(c => (
                   <option key={c._id} value={c._id}>{c.name}</option>
                 ))}
               </select>
@@ -165,7 +191,8 @@ Please record in accounts.
               <FaCubes className="absolute left-3 top-3 text-gray-400" />
               <select
                 value={form.wireType}
-                onChange={(e)=>setForm({...form,wireType:e.target.value})}
+                disabled={isFromSale}
+                onChange={(e) => setForm({ ...form, wireType: e.target.value })}
                 className="w-full border rounded-lg pl-10 pr-3 py-2"
               >
                 <option value="">Select Wire</option>
@@ -179,9 +206,10 @@ Please record in accounts.
               <FaCalculator className="absolute left-3 top-3 text-gray-400" />
               <input
                 type="number"
+                disabled={isFromSale}
                 placeholder="Qty"
                 value={form.qty}
-                onChange={(e)=>setForm({...form,qty:e.target.value})}
+                onChange={(e) => setForm({ ...form, qty: e.target.value })}
                 className="w-full border rounded-lg pl-10 pr-3 py-2"
               />
             </div>
@@ -190,9 +218,10 @@ Please record in accounts.
               <FaRupeeSign className="absolute left-3 top-3 text-gray-400" />
               <input
                 type="number"
+                disabled={isFromSale}
                 placeholder="Rate"
                 value={form.rate}
-                onChange={(e)=>setForm({...form,rate:e.target.value})}
+                onChange={(e) => setForm({ ...form, rate: e.target.value })}
                 className="w-full border rounded-lg pl-10 pr-3 py-2"
               />
             </div>

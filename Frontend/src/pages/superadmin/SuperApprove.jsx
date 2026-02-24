@@ -1,21 +1,22 @@
 import { useEffect, useState } from "react";
 import axios from "../../api/axios";
-import { Check, X } from "lucide-react";
+import { Check, X, FileCheck } from "lucide-react";
 import { toast } from "react-toastify";
+import { motion } from "framer-motion";
 
-export default function SuperApprove() {
-  const [prs, setPRs] = useState([]);
+export default function SuperApprovePO() {
+  const [pos, setPOs] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    loadPRs();
+    loadPOs();
   }, []);
 
-  const loadPRs = async () => {
+  const loadPOs = async () => {
     try {
-      const res = await axios.get("/purchase/pending/superadmin");
-      setPRs(res.data);
-    } catch (err) {
+      const res = await axios.get("/purchase/pending-po");
+      setPOs(res.data);
+    } catch {
       toast.error("Failed to load approvals");
     } finally {
       setLoading(false);
@@ -24,9 +25,9 @@ export default function SuperApprove() {
 
   const approve = async (id) => {
     try {
-      await axios.put(`/purchase/superadmin-approve/${id}`);
-      toast.success("Purchase approved");
-      setPRs(prev => prev.filter(p => p._id !== id));
+      await axios.put(`/purchase/approve-po/${id}`);
+      toast.success("PO approved");
+      setPOs(prev => prev.filter(p => p._id !== id));
     } catch {
       toast.error("Approval failed");
     }
@@ -34,9 +35,9 @@ export default function SuperApprove() {
 
   const reject = async (id) => {
     try {
-      await axios.put(`/purchase/superadmin-reject/${id}`);
-      toast.error("Purchase rejected");
-      setPRs(prev => prev.filter(p => p._id !== id));
+      await axios.put(`/purchase/reject-po/${id}`);
+      toast.error("PO rejected");
+      setPOs(prev => prev.filter(p => p._id !== id));
     } catch {
       toast.error("Rejection failed");
     }
@@ -44,73 +45,90 @@ export default function SuperApprove() {
 
   if (loading) {
     return (
-      <p className="text-center text-slate-400">
-        Loading requests...
+      <p className="text-center text-slate-400 py-20">
+        Loading purchase orders...
       </p>
     );
   }
 
   return (
-    <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
-      {prs.map((p) => (
-        <div
-          key={p._id}
-          className="relative bg-white rounded-2xl p-6 shadow-md hover:shadow-lg transition"
-        >
-          {/* STATUS */}
-          <span className="absolute top-4 right-4 px-3 py-1 text-xs rounded-full
-                           bg-yellow-100 text-yellow-700">
-            Admin Approved
-          </span>
+    <div className="w-full">
 
-          {/* EMPLOYEE */}
-          <p className="text-xs text-slate-400">Requested by</p>
-          <p className="font-semibold text-slate-800">
-            {p.createdBy?.name || "Employee"}
-          </p>
-          <p className="text-xs text-slate-500">
-            {p.createdBy?.email}
-          </p>
-
-          {/* DETAILS */}
-          <div className="mt-4 space-y-1 text-sm">
-            <p><b>Material:</b> {p.materialName}</p>
-            <p><b>Quantity:</b> {p.quantity}</p>
-            <p><b>Expected Price:</b> ₹{p.expectedPrice}</p>
-          </div>
-
-          {/* ACTIONS */}
-          <div className="flex gap-3 mt-6">
-            <button
-              onClick={() => approve(p._id)}
-              className="flex-1 flex items-center justify-center gap-2
-                         border border-green-500 text-green-600
-                         rounded-xl py-2 hover:bg-green-50
-                         cursor-pointer transition"
-            >
-              <Check size={16} />
-              Approve
-            </button>
-
-            <button
-              onClick={() => reject(p._id)}
-              className="flex-1 flex items-center justify-center gap-2
-                         border border-red-500 text-red-600
-                         rounded-xl py-2 hover:bg-red-50
-                         cursor-pointer transition"
-            >
-              <X size={16} />
-              Reject
-            </button>
-          </div>
+      {/* 🔷 PAGE HEADING */}
+      <div className="flex items-center gap-4 mb-6">
+        <div className="w-12 h-12 rounded-xl bg-indigo-600 flex items-center justify-center">
+          <FileCheck className="text-white" size={22} />
         </div>
-      ))}
 
-      {prs.length === 0 && (
-        <p className="col-span-full text-center text-slate-400">
-          No pending approvals
-        </p>
-      )}
+        <div>
+          <h2 className="text-xl font-bold text-slate-800">
+            Purchase Order Approvals
+          </h2>
+          <p className="text-sm text-slate-500">
+            SuperAdmin approval required for created POs
+          </p>
+        </div>
+      </div>
+
+      {/* 🔷 LIST */}
+      <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
+        {pos.map((p) => (
+          <motion.div
+            key={p._id}
+            whileHover={{ y: -4 }}
+            className="relative bg-white rounded-2xl p-6 shadow-md hover:shadow-lg transition"
+          >
+            {/* STATUS */}
+            <span className="absolute top-4 right-4 px-3 py-1 text-xs rounded-full
+                             bg-yellow-100 text-yellow-700">
+              PO Waiting Approval
+            </span>
+
+            {/* VENDOR */}
+            <p className="text-xs text-slate-400">Vendor</p>
+            <p className="font-semibold text-slate-800">
+              {p.vendor?.name}
+            </p>
+
+            {/* DETAILS */}
+            <div className="mt-4 space-y-1 text-sm">
+              <p><b>Material:</b> {p.materialName}</p>
+              <p><b>Qty:</b> {p.quantity}</p>
+              <p><b>Rate:</b> ₹{p.finalRate}</p>
+              <p><b>Total:</b> ₹{p.totalAmount}</p>
+            </div>
+
+            {/* ACTIONS */}
+            <div className="flex gap-3 mt-6">
+              <button
+                onClick={() => approve(p._id)}
+                className="flex-1 flex items-center justify-center gap-2
+                           border border-green-500 text-green-600
+                           rounded-xl py-2 hover:bg-green-50"
+              >
+                <Check size={16} />
+                Approve
+              </button>
+
+              <button
+                onClick={() => reject(p._id)}
+                className="flex-1 flex items-center justify-center gap-2
+                           border border-red-500 text-red-600
+                           rounded-xl py-2 hover:bg-red-50"
+              >
+                <X size={16} />
+                Reject
+              </button>
+            </div>
+          </motion.div>
+        ))}
+
+        {pos.length === 0 && (
+          <p className="col-span-full text-center text-slate-400 py-20">
+            No pending PO approvals
+          </p>
+        )}
+      </div>
     </div>
   );
 }

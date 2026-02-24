@@ -18,7 +18,7 @@ import AddAdmin from "./AddAdmin";
 import SuperAdminEmployee from "./SuperAdminEmployee";
 import NotificationBell from "../components/NotificationBell";
 import SuperApprove from "./superadmin/SuperApprove";
-import { FaMoneyBill, FaMoneyBillWave, FaReceipt, FaShoppingCart } from "react-icons/fa";
+import { FaChartLine, FaMoneyBill, FaMoneyBillWave, FaReceipt, FaShoppingCart } from "react-icons/fa";
 import AccountsPaymentHistory from "./accounts/AccountPaymentHistory";
 import RawMaterial from "./Manufecturing/RawMaterial";
 import ProductionShow from "./Manufecturing/ProductionShow";
@@ -28,6 +28,7 @@ import SuperDashboard from "./SuperDashboard";
 import SuperAdminApprove from "./accounts/SuperAdminApprove";
 import PendingPayments from "./superadmin/PendingPayments";
 import PaymentsReceived from "./superadmin/PaymentReceived";
+import SuperAdminFinance from "./superadmin/SuperAdminFinance";
 
 export default function SuperAdminDashboard() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -244,7 +245,7 @@ export default function SuperAdminDashboard() {
               <SuperDashboard />
             </>
           )}
-
+          {page === "finance" && <SuperAdminFinance />}
           {page === "create-admin" && <AddAdmin />}
           {page === "admins" && <AdminList />}
           {page === "employees" && <SuperAdminEmployee />}
@@ -315,6 +316,14 @@ function Sidebar({ setPage, page, logout }) {
           Dashboard
         </button>
 
+         <button
+          onClick={() => setPage("finance")}
+          className={menuBtn("finance")}
+        >
+          <FaChartLine size={18} />
+          Finance
+        </button>
+
         {/* ADMIN */}
         <p className="px-4 mt-6 mb-2 text-xs tracking-widest text-slate-400">
           ADMIN MANAGEMENT
@@ -359,7 +368,7 @@ function Sidebar({ setPage, page, logout }) {
           className={menuBtn("purchase-requests")}
         >
           <FileText size={18} />
-          Purchase Requests
+          PurchaseOrder Requests
         </button>
 
         {/* FINANCE / AUDIT */}

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "../../api/axios";
 import { toast } from "react-toastify";
-import { Check, X } from "lucide-react";
+import { Check, X, ClipboardCheck } from "lucide-react";
 
 export default function AdminApprovals() {
   const [prs, setPRs] = useState([]);
@@ -50,9 +50,24 @@ export default function AdminApprovals() {
 
   return (
     <>
+      {/* ================= HEADER ================= */}
+      <div className="flex items-center gap-3 mb-8">
+        <div className="w-12 h-12 rounded-xl bg-indigo-600 flex items-center justify-center shadow">
+          <ClipboardCheck className="text-white" size={22} />
+        </div>
+
+        <div>
+          <h1 className="text-2xl font-bold text-slate-800">
+            Admin Purchase Approvals
+          </h1>
+          <p className="text-sm text-slate-500">
+            Review and approve employee purchase requests
+          </p>
+        </div>
+      </div>
+
       {/* ================= REQUEST LIST ================= */}
       <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-6">
-
         {prs.map((p) => (
           <div
             key={p._id}
@@ -64,14 +79,7 @@ export default function AdminApprovals() {
             "
           >
             {/* STATUS BADGE */}
-            <span
-              className="
-                absolute top-4 right-4
-                text-xs font-medium
-                bg-yellow-100 text-yellow-800
-                px-3 py-1 rounded-full
-              "
-            >
+            <span className="absolute top-4 right-4 text-xs font-medium bg-yellow-100 text-yellow-800 px-3 py-1 rounded-full">
               Pending
             </span>
 
@@ -107,13 +115,7 @@ export default function AdminApprovals() {
             <div className="flex gap-3 mt-6">
               <button
                 onClick={() => approve(p._id)}
-                className="
-                  flex-1 py-2 rounded-lg
-                  border border-indigo-600
-                  text-indigo-600
-                  hover:bg-indigo-600 hover:text-white
-                  transition text-sm font-medium
-                "
+                className="flex-1 py-2 rounded-lg border border-indigo-600 text-indigo-600 hover:bg-indigo-600 hover:text-white transition text-sm font-medium"
               >
                 <Check size={16} className="inline mr-1" />
                 Approve
@@ -121,13 +123,7 @@ export default function AdminApprovals() {
 
               <button
                 onClick={() => setRejectId(p._id)}
-                className="
-                  flex-1 py-2 rounded-lg
-                  border border-red-500
-                  text-red-600
-                  hover:bg-red-600 hover:text-white
-                  transition text-sm font-medium
-                "
+                className="flex-1 py-2 rounded-lg border border-red-500 text-red-600 hover:bg-red-600 hover:text-white transition text-sm font-medium"
               >
                 <X size={16} className="inline mr-1" />
                 Reject
@@ -147,7 +143,6 @@ export default function AdminApprovals() {
       {rejectId && (
         <div className="fixed inset-0 bg-black/40 z-50 flex items-center justify-center px-4">
           <div className="bg-white rounded-xl w-full max-w-md p-6 relative">
-
             <button
               onClick={() => setRejectId(null)}
               className="absolute top-4 right-4 text-slate-400 hover:text-slate-700"
@@ -163,10 +158,7 @@ export default function AdminApprovals() {
               value={reason}
               onChange={(e) => setReason(e.target.value)}
               placeholder="Enter rejection reason"
-              className="
-                w-full h-28 border rounded-lg p-3
-                outline-none focus:ring-2 focus:ring-red-500
-              "
+              className="w-full h-28 border rounded-lg p-3 outline-none focus:ring-2 focus:ring-red-500"
             />
 
             <div className="flex justify-end gap-3 mt-5">
