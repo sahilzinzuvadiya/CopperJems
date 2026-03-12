@@ -1,3 +1,215 @@
+// // import { useEffect, useState } from "react";
+// // import axios from "../../api/axios";
+// // import { motion, AnimatePresence } from "framer-motion";
+// // import {
+// //   FaUsers,
+// //   FaPhone,
+// //   FaMapMarkerAlt,
+// //   FaCalendarAlt,
+// //   FaEdit,
+// //   FaTrash,
+// //   FaTimes
+// // } from "react-icons/fa";
+// // import { toast } from "react-toastify";
+
+// // export default function AccountClients() {
+// //   const [clients, setClients] = useState([]);
+// //   const [search, setSearch] = useState("");
+// //   const [editing, setEditing] = useState(null);
+// //   const [form, setForm] = useState({
+// //     name: "",
+// //     phone: "",
+// //     address: "",
+// //     creditDays: 0
+// //   });
+
+// //   const load = async () => {
+// //     try {
+// //       const res = await axios.get("/account/all");
+// //       setClients(res.data);
+// //     } catch {
+// //       toast.error("Failed to load clients");
+// //     }
+// //   };
+
+// //   useEffect(() => {
+// //     load();
+// //   }, []);
+
+// //   const filtered = clients.filter(c =>
+// //     c.name.toLowerCase().includes(search.toLowerCase())
+// //   );
+
+// //   /* ---------- DELETE ---------- */
+// //   const deleteClient = async (id) => {
+// //     if (!window.confirm("Delete client?")) return;
+
+// //     await axios.delete(`account/client/${id}`);
+// //     toast.success("Client deleted");
+// //     load();
+// //   };
+
+// //   /* ---------- EDIT OPEN ---------- */
+// //   const openEdit = (c) => {
+// //     setEditing(c);
+// //     setForm({
+// //       name: c.name,
+// //       phone: c.phone,
+// //       address: c.address,
+// //       creditDays: c.creditDays
+// //     });
+// //   };
+
+// //   /* ---------- SAVE EDIT ---------- */
+// //   const saveEdit = async () => {
+// //     await axios.put(`account/client/${editing._id}`, form);
+// //     toast.success("Client updated");
+// //     setEditing(null);
+// //     load();
+// //   };
+
+// //   return (
+// //     <div className="min-h-screen bg-slate-100 p-4">
+
+// //       {/* HEADER */}
+// //       <div className="flex items-center gap-3 mb-8">
+// //         <div className="w-12 h-12 bg-indigo-600 rounded-xl flex items-center justify-center shadow">
+// //           <FaUsers className="text-white text-xl"/>
+// //         </div>
+// //         <div>
+// //           <h1 className="text-2xl font-bold text-slate-800">Clients</h1>
+// //           <p className="text-sm text-slate-500">Manage your customers</p>
+// //         </div>
+// //       </div>
+
+// //       {/* SEARCH */}
+// //       <input
+// //         placeholder="Search client..."
+// //         value={search}
+// //         onChange={e=>setSearch(e.target.value)}
+// //         className="w-full md:w-80 border rounded-lg px-4 py-2 mb-6 focus:ring-2 focus:ring-indigo-500"
+// //       />
+
+// //       {/* GRID */}
+// //       <div className="grid grid-cols-1 md:grid-cols-1 xl:grid-cols-3 gap-6">
+// //         {filtered.map((c) => (
+// //           <motion.div
+// //             key={c._id}
+// //             whileHover={{ scale:1.03 }}
+// //             className="bg-white rounded-2xl shadow-md p-6 border-l-4 border-indigo-600 relative"
+// //           >
+// //             <h3 className="text-lg font-semibold text-slate-800">{c.name}</h3>
+
+// //             <p className="text-sm mt-3 flex items-center gap-2 text-slate-600">
+// //               <FaPhone className="text-indigo-600"/>
+// //               {c.phone || "-"}
+// //             </p>
+
+// //             <p className="text-sm mt-2 flex items-center gap-2 text-slate-600">
+// //               <FaMapMarkerAlt className="text-indigo-600"/>
+// //               {c.address || "-"}
+// //             </p>
+
+// //             <p className="text-sm mt-2 flex items-center gap-2 text-slate-600">
+// //               <FaCalendarAlt className="text-indigo-600"/>
+// //               Credit: <b>{c.creditDays || 0} days</b>
+// //             </p>
+
+// //             {/* BUTTONS */}
+// //             <div className="flex gap-3 mt-5">
+// //               <button
+// //                 onClick={()=>openEdit(c)}
+// //                 className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-indigo-700"
+// //               >
+// //                 <FaEdit/> Edit
+// //               </button>
+
+// //               <button
+// //                 onClick={()=>deleteClient(c._id)}
+// //                 className="flex items-center gap-2 bg-red-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-red-600"
+// //               >
+// //                 <FaTrash/> Delete
+// //               </button>
+// //             </div>
+// //           </motion.div>
+// //         ))}
+// //       </div>
+
+// //       {/* EDIT MODAL */}
+// //       <AnimatePresence>
+// //         {editing && (
+// //           <>
+// //             {/* BLUR BACKGROUND */}
+// //             <motion.div
+// //               initial={{ opacity:0 }}
+// //               animate={{ opacity:1 }}
+// //               exit={{ opacity:0 }}
+// //               className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40"
+// //               onClick={()=>setEditing(null)}
+// //             />
+
+// //             {/* FORM */}
+// //             <motion.div
+// //               initial={{ scale:0.8, opacity:0 }}
+// //               animate={{ scale:1, opacity:1 }}
+// //               exit={{ scale:0.8, opacity:0 }}
+// //               className="fixed z-50 inset-0 flex items-center justify-center"
+// //             >
+// //               <div className="bg-white rounded-2xl shadow-xl w-[400px] p-6 relative">
+
+// //                 {/* CLOSE */}
+// //                 <button
+// //                   onClick={()=>setEditing(null)}
+// //                   className="absolute top-3 right-3 text-slate-500 hover:text-black"
+// //                 >
+// //                   <FaTimes/>
+// //                 </button>
+
+// //                 <h2 className="text-xl font-bold mb-4">Edit Client</h2>
+
+// //                 <input
+// //                   className="w-full border rounded-lg px-3 py-2 mb-3"
+// //                   placeholder="Name"
+// //                   value={form.name}
+// //                   onChange={e=>setForm({...form,name:e.target.value})}
+// //                 />
+
+// //                 <input
+// //                   className="w-full border rounded-lg px-3 py-2 mb-3"
+// //                   placeholder="Phone"
+// //                   value={form.phone}
+// //                   onChange={e=>setForm({...form,phone:e.target.value})}
+// //                 />
+
+// //                 <input
+// //                   className="w-full border rounded-lg px-3 py-2 mb-3"
+// //                   placeholder="Address"
+// //                   value={form.address}
+// //                   onChange={e=>setForm({...form,address:e.target.value})}
+// //                 />
+
+// //                 <input
+// //                   type="number"
+// //                   className="w-full border rounded-lg px-3 py-2 mb-4"
+// //                   placeholder="Credit days"
+// //                   value={form.creditDays}
+// //                   onChange={e=>setForm({...form,creditDays:e.target.value})}
+// //                 />
+
+// //                 <button
+// //                   onClick={saveEdit}
+// //                   className="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700"
+// //                 >
+// //                   Save Changes
+// //                 </button>
+// //               </div>
+// //             </motion.div>
+// //           </>
+// //         )}
+// //       </AnimatePresence>
+// //     </div>
+// //   );
+// // }
 // import { useEffect, useState } from "react";
 // import axios from "../../api/axios";
 // import { motion, AnimatePresence } from "framer-motion";
@@ -8,7 +220,8 @@
 //   FaCalendarAlt,
 //   FaEdit,
 //   FaTrash,
-//   FaTimes
+//   FaTimes,
+//   FaSearch
 // } from "react-icons/fa";
 // import { toast } from "react-toastify";
 
@@ -40,16 +253,13 @@
 //     c.name.toLowerCase().includes(search.toLowerCase())
 //   );
 
-//   /* ---------- DELETE ---------- */
 //   const deleteClient = async (id) => {
 //     if (!window.confirm("Delete client?")) return;
-
 //     await axios.delete(`account/client/${id}`);
 //     toast.success("Client deleted");
 //     load();
 //   };
 
-//   /* ---------- EDIT OPEN ---------- */
 //   const openEdit = (c) => {
 //     setEditing(c);
 //     setForm({
@@ -60,7 +270,6 @@
 //     });
 //   };
 
-//   /* ---------- SAVE EDIT ---------- */
 //   const saveEdit = async () => {
 //     await axios.put(`account/client/${editing._id}`, form);
 //     toast.success("Client updated");
@@ -69,26 +278,49 @@
 //   };
 
 //   return (
-//     <div className="min-h-screen bg-slate-100 p-4">
+//     <div className="min-h-screen p-4">
 
-//       {/* HEADER */}
-//       <div className="flex items-center gap-3 mb-8">
-//         <div className="w-12 h-12 bg-indigo-600 rounded-xl flex items-center justify-center shadow">
-//           <FaUsers className="text-white text-xl"/>
-//         </div>
-//         <div>
-//           <h1 className="text-2xl font-bold text-slate-800">Clients</h1>
-//           <p className="text-sm text-slate-500">Manage your customers</p>
-//         </div>
-//       </div>
+// {/* HEADER + SEARCH ROW */}
+// <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
 
-//       {/* SEARCH */}
-//       <input
-//         placeholder="Search client..."
-//         value={search}
-//         onChange={e=>setSearch(e.target.value)}
-//         className="w-full md:w-80 border rounded-lg px-4 py-2 mb-6 focus:ring-2 focus:ring-indigo-500"
-//       />
+//   {/* LEFT → TITLE */}
+//   <div className="flex items-center gap-3">
+//     <div className="w-12 h-12 bg-indigo-600 rounded-xl flex items-center justify-center shadow">
+//       <FaUsers className="text-white text-xl" />
+//     </div>
+
+//     <div className="leading-tight">
+//       <h1 className="text-2xl font-bold text-slate-800">Clients</h1>
+//       <p className="text-sm text-slate-500 m-0">Manage your customers</p>
+//     </div>
+//   </div>
+
+//   {/* RIGHT → SEARCH */}
+//   <div className="relative w-full lg:w-80">
+//     <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+
+//     <input
+//       placeholder="Search client..."
+//       value={search}
+//       onChange={e => setSearch(e.target.value)}
+//       className="
+//         w-full
+//         pl-11 pr-4 py-3
+//         rounded-xl
+//         border border-slate-200
+//         bg-white
+//         shadow-sm
+//         focus:outline-none
+//         focus:ring-2 focus:ring-indigo-500
+//         focus:border-indigo-500
+//         text-sm
+//       "
+//     />
+//   </div>
+
+// </div>
+
+
 
 //       {/* GRID */}
 //       <div className="grid grid-cols-1 md:grid-cols-1 xl:grid-cols-3 gap-6">
@@ -115,7 +347,6 @@
 //               Credit: <b>{c.creditDays || 0} days</b>
 //             </p>
 
-//             {/* BUTTONS */}
 //             <div className="flex gap-3 mt-5">
 //               <button
 //                 onClick={()=>openEdit(c)}
@@ -135,11 +366,10 @@
 //         ))}
 //       </div>
 
-//       {/* EDIT MODAL */}
+//       {/* EDIT MODAL (unchanged) */}
 //       <AnimatePresence>
 //         {editing && (
 //           <>
-//             {/* BLUR BACKGROUND */}
 //             <motion.div
 //               initial={{ opacity:0 }}
 //               animate={{ opacity:1 }}
@@ -148,7 +378,6 @@
 //               onClick={()=>setEditing(null)}
 //             />
 
-//             {/* FORM */}
 //             <motion.div
 //               initial={{ scale:0.8, opacity:0 }}
 //               animate={{ scale:1, opacity:1 }}
@@ -157,7 +386,6 @@
 //             >
 //               <div className="bg-white rounded-2xl shadow-xl w-[400px] p-6 relative">
 
-//                 {/* CLOSE */}
 //                 <button
 //                   onClick={()=>setEditing(null)}
 //                   className="absolute top-3 right-3 text-slate-500 hover:text-black"
@@ -214,40 +442,44 @@ import { useEffect, useState } from "react";
 import axios from "../../api/axios";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  FaUsers,
-  FaPhone,
-  FaMapMarkerAlt,
-  FaCalendarAlt,
-  FaEdit,
-  FaTrash,
-  FaTimes,
-  FaSearch
+  FaUsers, FaPhone, FaMapMarkerAlt, FaCalendarAlt,
+  FaEdit, FaTrash, FaTimes, FaSearch
 } from "react-icons/fa";
 import { toast } from "react-toastify";
 
+const CARD   = "rgba(22,20,48,0.95)";
+const BORDER = "rgba(99,102,241,0.18)";
+const TEXT1  = "#ede9fe";
+const TEXT2  = "#6d6a9c";
+const INDIGO = "#6366f1";
+const VIOLET = "#a78bfa";
+
+const inputStyle = {
+  background: "rgba(99,102,241,0.06)",
+  border: `1px solid rgba(99,102,241,0.18)`,
+  color: "#ede9fe",
+  outline: "none",
+  borderRadius: "12px",
+  padding: "10px 14px",
+  width: "100%",
+  fontSize: "14px",
+  caretColor: "#a78bfa",
+};
+
 export default function AccountClients() {
   const [clients, setClients] = useState([]);
-  const [search, setSearch] = useState("");
+  const [search,  setSearch]  = useState("");
   const [editing, setEditing] = useState(null);
-  const [form, setForm] = useState({
-    name: "",
-    phone: "",
-    address: "",
-    creditDays: 0
-  });
+  const [form,    setForm]    = useState({ name: "", phone: "", address: "", creditDays: 0 });
+
+  useEffect(() => { load(); }, []);
 
   const load = async () => {
     try {
       const res = await axios.get("/account/all");
       setClients(res.data);
-    } catch {
-      toast.error("Failed to load clients");
-    }
+    } catch { toast.error("Failed to load clients"); }
   };
-
-  useEffect(() => {
-    load();
-  }, []);
 
   const filtered = clients.filter(c =>
     c.name.toLowerCase().includes(search.toLowerCase())
@@ -262,12 +494,7 @@ export default function AccountClients() {
 
   const openEdit = (c) => {
     setEditing(c);
-    setForm({
-      name: c.name,
-      phone: c.phone,
-      address: c.address,
-      creditDays: c.creditDays
-    });
+    setForm({ name: c.name, phone: c.phone, address: c.address, creditDays: c.creditDays });
   };
 
   const saveEdit = async () => {
@@ -277,159 +504,204 @@ export default function AccountClients() {
     load();
   };
 
+  const focusInput  = (e) => { e.target.style.borderColor = "rgba(167,139,250,0.6)"; e.target.style.boxShadow = "0 0 0 3px rgba(99,102,241,0.15)"; e.target.style.background = "rgba(99,102,241,0.1)"; };
+  const blurInput   = (e) => { e.target.style.borderColor = "rgba(99,102,241,0.18)"; e.target.style.boxShadow = "none"; e.target.style.background = "rgba(99,102,241,0.06)"; };
+
   return (
     <div className="min-h-screen p-4">
 
-{/* HEADER + SEARCH ROW */}
-<div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
+      {/* ── HEADER + SEARCH ── */}
+      <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 mb-6">
 
-  {/* LEFT → TITLE */}
-  <div className="flex items-center gap-3">
-    <div className="w-12 h-12 bg-indigo-600 rounded-xl flex items-center justify-center shadow">
-      <FaUsers className="text-white text-xl" />
-    </div>
+        {/* Title */}
+        <div className="flex items-center gap-3">
+          <div
+            className="w-12 h-12 rounded-xl flex items-center justify-center"
+            style={{
+              background: `linear-gradient(135deg, ${INDIGO}, ${VIOLET})`,
+              boxShadow: `0 0 20px rgba(99,102,241,0.4)`,
+            }}
+          >
+            <FaUsers className="text-white text-xl" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-bold" style={{ color: TEXT1 }}>Clients</h1>
+            <p className="text-sm mt-0.5" style={{ color: TEXT2 }}>Manage your customers</p>
+          </div>
+        </div>
 
-    <div className="leading-tight">
-      <h1 className="text-2xl font-bold text-slate-800">Clients</h1>
-      <p className="text-sm text-slate-500 m-0">Manage your customers</p>
-    </div>
-  </div>
+        {/* Search */}
+        <div
+          className="relative w-full lg:w-80 flex items-center gap-3 px-4 py-3 rounded-xl"
+          style={{ background: CARD, border: `1px solid ${BORDER}` }}
+        >
+          <FaSearch style={{ color: TEXT2 }} />
+          <input
+            placeholder="Search client..."
+            value={search}
+            onChange={e => setSearch(e.target.value)}
+            className="w-full bg-transparent outline-none text-sm"
+            style={{ color: TEXT1, caretColor: VIOLET }}
+            onFocus={e => e.target.parentElement.style.borderColor = "rgba(167,139,250,0.5)"}
+            onBlur={e  => e.target.parentElement.style.borderColor = BORDER}
+          />
+        </div>
+      </div>
 
-  {/* RIGHT → SEARCH */}
-  <div className="relative w-full lg:w-80">
-    <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
+      {/* ── EMPTY ── */}
+      {filtered.length === 0 && (
+        <p className="text-center mt-10 text-sm" style={{ color: TEXT2 }}>
+          No clients found
+        </p>
+      )}
 
-    <input
-      placeholder="Search client..."
-      value={search}
-      onChange={e => setSearch(e.target.value)}
-      className="
-        w-full
-        pl-11 pr-4 py-3
-        rounded-xl
-        border border-slate-200
-        bg-white
-        shadow-sm
-        focus:outline-none
-        focus:ring-2 focus:ring-indigo-500
-        focus:border-indigo-500
-        text-sm
-      "
-    />
-  </div>
-
-</div>
-
-
-
-      {/* GRID */}
-      <div className="grid grid-cols-1 md:grid-cols-1 xl:grid-cols-3 gap-6">
+      {/* ── GRID ── */}
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-5">
         {filtered.map((c) => (
           <motion.div
             key={c._id}
-            whileHover={{ scale:1.03 }}
-            className="bg-white rounded-2xl shadow-md p-6 border-l-4 border-indigo-600 relative"
+            whileHover={{ scale: 1.02, y: -4 }}
+            className="relative p-6 rounded-2xl"
+            style={{
+              background: CARD,
+              border: `1px solid ${BORDER}`,
+              borderLeft: `4px solid ${INDIGO}`,
+              boxShadow: "0 4px 24px rgba(0,0,0,0.4)",
+            }}
           >
-            <h3 className="text-lg font-semibold text-slate-800">{c.name}</h3>
+            <h3 className="text-base font-semibold mb-4" style={{ color: TEXT1 }}>
+              {c.name}
+            </h3>
 
-            <p className="text-sm mt-3 flex items-center gap-2 text-slate-600">
-              <FaPhone className="text-indigo-600"/>
-              {c.phone || "-"}
-            </p>
+            {/* Details */}
+            <div
+              className="space-y-2.5 text-sm py-4"
+              style={{ borderTop: `1px solid ${BORDER}`, borderBottom: `1px solid ${BORDER}` }}
+            >
+              {[
+                { icon: <FaPhone style={{ color: VIOLET }} />,         value: c.phone   || "-"                  },
+                { icon: <FaMapMarkerAlt style={{ color: VIOLET }} />,  value: c.address || "-"                  },
+                { icon: <FaCalendarAlt style={{ color: VIOLET }} />,   value: `Credit: ${c.creditDays || 0} days` },
+              ].map((row, i) => (
+                <p key={i} className="flex items-center gap-2" style={{ color: TEXT2 }}>
+                  {row.icon}
+                  <span style={{ color: TEXT1 }}>{row.value}</span>
+                </p>
+              ))}
+            </div>
 
-            <p className="text-sm mt-2 flex items-center gap-2 text-slate-600">
-              <FaMapMarkerAlt className="text-indigo-600"/>
-              {c.address || "-"}
-            </p>
-
-            <p className="text-sm mt-2 flex items-center gap-2 text-slate-600">
-              <FaCalendarAlt className="text-indigo-600"/>
-              Credit: <b>{c.creditDays || 0} days</b>
-            </p>
-
+            {/* Buttons */}
             <div className="flex gap-3 mt-5">
               <button
-                onClick={()=>openEdit(c)}
-                className="flex items-center gap-2 bg-indigo-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-indigo-700"
+                onClick={() => openEdit(c)}
+                className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all"
+                style={{
+                  background: "rgba(99,102,241,0.1)",
+                  border: `1px solid rgba(99,102,241,0.25)`,
+                  color: VIOLET,
+                }}
+                onMouseEnter={e => e.currentTarget.style.background = "rgba(99,102,241,0.2)"}
+                onMouseLeave={e => e.currentTarget.style.background = "rgba(99,102,241,0.1)"}
               >
-                <FaEdit/> Edit
+                <FaEdit /> Edit
               </button>
 
               <button
-                onClick={()=>deleteClient(c._id)}
-                className="flex items-center gap-2 bg-red-500 text-white px-4 py-2 rounded-lg text-sm hover:bg-red-600"
+                onClick={() => deleteClient(c._id)}
+                className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium transition-all"
+                style={{
+                  background: "rgba(239,68,68,0.1)",
+                  border: "1px solid rgba(239,68,68,0.25)",
+                  color: "#f87171",
+                }}
+                onMouseEnter={e => e.currentTarget.style.background = "rgba(239,68,68,0.2)"}
+                onMouseLeave={e => e.currentTarget.style.background = "rgba(239,68,68,0.1)"}
               >
-                <FaTrash/> Delete
+                <FaTrash /> Delete
               </button>
             </div>
           </motion.div>
         ))}
       </div>
 
-      {/* EDIT MODAL (unchanged) */}
+      {/* ── EDIT MODAL ── */}
       <AnimatePresence>
         {editing && (
           <>
             <motion.div
-              initial={{ opacity:0 }}
-              animate={{ opacity:1 }}
-              exit={{ opacity:0 }}
-              className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40"
-              onClick={()=>setEditing(null)}
+              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+              className="fixed inset-0 z-40"
+              style={{ background: "rgba(0,0,0,0.7)", backdropFilter: "blur(6px)" }}
+              onClick={() => setEditing(null)}
             />
 
             <motion.div
-              initial={{ scale:0.8, opacity:0 }}
-              animate={{ scale:1, opacity:1 }}
-              exit={{ scale:0.8, opacity:0 }}
-              className="fixed z-50 inset-0 flex items-center justify-center"
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1,   opacity: 1 }}
+              exit={{   scale: 0.8,  opacity: 0 }}
+              className="fixed z-50 inset-0 flex items-center justify-center px-4"
             >
-              <div className="bg-white rounded-2xl shadow-xl w-[400px] p-6 relative">
+              <div
+                className="w-full max-w-md rounded-2xl p-6 relative"
+                style={{
+                  background: CARD,
+                  border: `1px solid ${BORDER}`,
+                  boxShadow: "0 32px 64px rgba(0,0,0,0.7)",
+                }}
+              >
+                {/* Top glow line */}
+                <div style={{
+                  position: "absolute", top: 0, left: "50%", transform: "translateX(-50%)",
+                  width: "160px", height: "1px",
+                  background: `linear-gradient(90deg, transparent, ${VIOLET}, transparent)`,
+                }} />
 
+                {/* Close */}
                 <button
-                  onClick={()=>setEditing(null)}
-                  className="absolute top-3 right-3 text-slate-500 hover:text-black"
+                  onClick={() => setEditing(null)}
+                  className="absolute top-4 right-4 transition"
+                  style={{ color: TEXT2 }}
+                  onMouseEnter={e => e.currentTarget.style.color = TEXT1}
+                  onMouseLeave={e => e.currentTarget.style.color = TEXT2}
                 >
-                  <FaTimes/>
+                  <FaTimes />
                 </button>
 
-                <h2 className="text-xl font-bold mb-4">Edit Client</h2>
+                <h2 className="text-xl font-bold mb-5" style={{ color: TEXT1 }}>
+                  Edit Client
+                </h2>
 
-                <input
-                  className="w-full border rounded-lg px-3 py-2 mb-3"
-                  placeholder="Name"
-                  value={form.name}
-                  onChange={e=>setForm({...form,name:e.target.value})}
-                />
+                <div className="space-y-3">
+                  {[
+                    { placeholder: "Name",        value: form.name,       key: "name",       type: "text"   },
+                    { placeholder: "Phone",       value: form.phone,      key: "phone",      type: "text"   },
+                    { placeholder: "Address",     value: form.address,    key: "address",    type: "text"   },
+                    { placeholder: "Credit Days", value: form.creditDays, key: "creditDays", type: "number" },
+                  ].map((f) => (
+                    <input
+                      key={f.key}
+                      type={f.type}
+                      placeholder={f.placeholder}
+                      value={f.value}
+                      onChange={e => setForm({ ...form, [f.key]: e.target.value })}
+                      style={inputStyle}
+                      onFocus={focusInput}
+                      onBlur={blurInput}
+                    />
+                  ))}
 
-                <input
-                  className="w-full border rounded-lg px-3 py-2 mb-3"
-                  placeholder="Phone"
-                  value={form.phone}
-                  onChange={e=>setForm({...form,phone:e.target.value})}
-                />
-
-                <input
-                  className="w-full border rounded-lg px-3 py-2 mb-3"
-                  placeholder="Address"
-                  value={form.address}
-                  onChange={e=>setForm({...form,address:e.target.value})}
-                />
-
-                <input
-                  type="number"
-                  className="w-full border rounded-lg px-3 py-2 mb-4"
-                  placeholder="Credit days"
-                  value={form.creditDays}
-                  onChange={e=>setForm({...form,creditDays:e.target.value})}
-                />
-
-                <button
-                  onClick={saveEdit}
-                  className="w-full bg-indigo-600 text-white py-2 rounded-lg hover:bg-indigo-700"
-                >
-                  Save Changes
-                </button>
+                  <motion.button
+                    whileTap={{ scale: 0.97 }}
+                    onClick={saveEdit}
+                    className="w-full py-3 rounded-xl text-sm font-semibold text-white mt-2"
+                    style={{
+                      background: `linear-gradient(135deg, ${INDIGO}, ${VIOLET})`,
+                      boxShadow: `0 4px 16px rgba(99,102,241,0.35)`,
+                    }}
+                  >
+                    Save Changes
+                  </motion.button>
+                </div>
               </div>
             </motion.div>
           </>
